@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Application models based on the provided diagram
+enum Level {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  dayStreak Int       @default(0)
+  subjects  Subject[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Subject {
+  id         Int        @id @default(autoincrement())
+  name       String
+  progress  Int        @default(0)
+  userId     Int
+  user       User       @relation(fields: [userId], references: [id])
+  summaries    Summary[]
+  flashcards Flashcard[]
+  tests  Test[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Summary {
+  id        Int      @id @default(autoincrement())
+  texto     String
+  nome      String
+  subjectId Int
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Flashcard {
+  id        Int      @id @default(autoincrement())
+  front     String
+  back      String
+  level     Level
+  subjectId Int
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Test {
+  id          Int        @id @default(autoincrement())
+  name        String
+  attemps  Int        @default(0)
+  accurateAnswers Int       @default(0)
+  subjectId   Int
+  subject     Subject    @relation(fields: [subjectId], references: [id])
+  questions   Questions[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Questions {
+  id         Int      @id @default(autoincrement())
+  testId Int
+  quest      String
+  a1         String
+  a2         String
+  a3         String
+  a4         String
+  correctAnswer Int   // store 1..4 to indicate the correct option
+  test   Test @relation(fields: [testId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+
