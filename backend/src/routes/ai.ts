@@ -12,7 +12,19 @@ router.post("/ask", async (req: Request, res: Response) => {
     }
 
     const result = await askAI({ prompt, system, model, temperature });
-    return res.json({ ok: true, result });
+    
+    let parsedResult = result;
+    if (result.text && typeof result.text === 'string') {
+      try {
+        const cleanText = result.text.replace(/^```json\n?/, '').replace(/\n?```$/, '');
+        const jsonData = JSON.parse(cleanText);
+        parsedResult = jsonData;
+      } catch (parseError) {
+        parsedResult = result;
+      }
+    }
+    
+    return res.json({ ok: true, result: parsedResult });
   } catch (err: any) {
     console.error("AI error:", err?.message || err);
     return res.status(500).json({
