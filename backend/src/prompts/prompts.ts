@@ -31,24 +31,6 @@ export function getPrompt(type: PromptType, tema: string): string {
   return prompts[type].replace('{tema}', tema);
 }
 
-/**
- * Função para listar todos os tipos de prompts disponíveis
- * @returns Lista com os tipos de prompts disponíveis
- */
-export function listPrompts(): PromptType[] {
-  return Object.keys(prompts) as PromptType[];
-}
-
-/**
- * Função para verificar se um tipo de prompt é válido
- * @param type - Tipo a ser verificado
- * @returns true se o tipo for válido
- */
-export function isValidPromptType(type: string): type is PromptType {
-  return type in prompts;
-}
-
-// Exportar os prompts carregados para uso direto se necessário
 export { prompts };
 
 // Exemplos de uso comentados:
