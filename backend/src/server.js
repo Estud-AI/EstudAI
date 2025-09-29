@@ -1,5 +1,8 @@
-const express = require('express');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+
+const aiRouter = require("./routes/ai"); // <-- importa a rota separada
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -8,10 +11,13 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Health check route
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
 });
+
+// Rota de AI
+app.use("/api/ai", aiRouter); // <-- registra a rota em /api/ai
 
 // Start server
 app.listen(PORT, () => {
