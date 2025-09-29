@@ -1,8 +1,11 @@
-require("dotenv").config();
+// Carregar variáveis de ambiente primeiro
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
-
-const aiRouter = require("./routes/ai");
+const aiRouter = require("./routes/ai").default;
+import type { Request, Response } from 'express';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -12,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/api/health", (req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
 

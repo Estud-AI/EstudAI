@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+const OpenAI = require("openai");
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY não configurada");

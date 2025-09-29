@@ -1,4 +1,4 @@
-import { openai } from "../lib/openai";
+const { openai } = require("../lib/openai");
 
 type AskOptions = {
   prompt: string;
@@ -13,27 +13,15 @@ export async function askAI({
   model = "gpt-4o-mini",
   temperature = 0.2,
 }: AskOptions) {
-  const response = await openai.responses.create({
+  const response = await openai.chat.completions.create({
     model,
-    input: [
+    messages: [
       { role: "system", content: system },
       { role: "user", content: prompt },
     ],
     temperature,
   });
 
-  if (response.output_text) return { text: (response as any).output_text };
-
-  const text =
-    response.output
-      ?.map((item: any) =>
-        item?.content
-          ?.map((c: any) =>
-            c?.text?.value ?? c?.output_text?.value ?? ""
-          )
-          .join("")
-      )
-      .join("") ?? "";
-
+  const text = response.choices[0]?.message?.content || "";
   return { text };
 }
