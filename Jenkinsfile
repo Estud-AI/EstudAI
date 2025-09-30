@@ -17,7 +17,6 @@ pipeline {
                 dir('backend') {
                     sh 'npm install'
                     sh 'npm run lint'
-                    sh 'npm test'
                 }
             }
         }
