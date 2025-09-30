@@ -5,6 +5,7 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const aiRouter = require("./routes/ai").default;
+const userRouter = require("./routes/user-register").default;
 import type { Request, Response } from 'express';
 
 const app = express();
@@ -21,6 +22,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 
 // Rota de AI
 app.use("/api/ai", aiRouter);
+app.use("/api/user", userRouter);
 
 // Start server
 app.listen(PORT, () => {
