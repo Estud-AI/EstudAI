@@ -7,6 +7,8 @@ export interface User {
   name: string;
   email: string;
   dayStreak: number;
+  photoURL?: string | null;
+  phoneNumber?: string | null;
   subjects?: Subject[];
   createdAt: string | Date;
   updatedAt: string | Date;
