@@ -9,7 +9,8 @@ router.post("/user-register-by-google", async (req: Request, res: Response) => {
   try {
     const parsed = UserSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ ok: false, error: parsed.error.format() });
+      const messages = parsed.error.errors.map(err => err.message);
+      return res.status(400).json({ ok: false, error: messages });
     }
 
     if (await prisma.user.findUnique({ where: { email: parsed.data.email } })) {
@@ -37,7 +38,8 @@ router.post("/user-register", async (req: Request, res: Response) => {
   try {
     const parsed = UserSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ ok: false, error: parsed.error.format() });
+      const messages = parsed.error.errors.map(err => err.message);
+      return res.status(400).json({ ok: false, error: messages });
     }
 
     if (await prisma.user.findUnique({ where: { email: parsed.data.email } })) {
