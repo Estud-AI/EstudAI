@@ -1,0 +1,14 @@
+.shell {
+  display: grid;
+  grid-template-rows: 56px 1fr;
+  height: 100vh;
+  background: var(--bg-subtle);
+}
+.body {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+}
+.main {
+  padding: 16px;
+  overflow: auto;
+}
