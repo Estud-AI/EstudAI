@@ -3,10 +3,10 @@ const { join } = require('path');
 
 // Interface para definir os tipos de prompts disponíveis
 export interface Prompts {
-  resumo: string;
-  simulado: string;
+  summary: string;
+  test: string;
   flashcards: string;
-  materia: string;
+  subject: string;
 }
 
 // Tipos válidos de prompt
@@ -19,7 +19,7 @@ const prompts: Prompts = JSON.parse(
 
 /**
  * Função para obter um prompt formatado com o tema
- * @param type - Tipo do prompt (resumo, simulado, flashcards, materia)
+ * @param type - Tipo do prompt (summary, test, flashcards, subject)
  * @param tema - Tema da matéria
  * @returns Prompt formatado
  */
@@ -37,11 +37,11 @@ export { prompts };
 
 // 1. Gerar prompt para resumo
 // const temaExemplo = 'Revolução Francesa';
-// const promptResumo = getPrompt('resumo', temaExemplo);
+// const promptResumo = getPrompt('summary', temaExemplo);
 // console.log('Prompt Resumo:', promptResumo);
 
 // 2. Gerar prompt para simulado
-// const promptSimulado = getPrompt('simulado', 'Fotossíntese');
+// const promptSimulado = getPrompt('test', 'Fotossíntese');
 // console.log('Prompt Simulado:', promptSimulado);
 
 // 3. Gerar prompt para flashcards
@@ -49,5 +49,5 @@ export { prompts };
 // console.log('Prompt Flashcards:', promptFlashcards);
 
 // 4. Gerar prompt para material completo
-// const promptCompleto = getPrompt('materia', 'Equações do Segundo Grau');
+// const promptCompleto = getPrompt('subject', 'Equações do Segundo Grau');
 // console.log('Prompt Completo:', promptCompleto);
