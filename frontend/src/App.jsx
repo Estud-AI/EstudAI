@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Login from './pages/Login'
 
 function App() {
   const [healthStatus, setHealthStatus] = useState(null)
@@ -9,23 +10,18 @@ function App() {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    const checkHealth = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/health')
-        const data = await response.json()
-        setHealthStatus(data)
-        setLoading(false)
-      } catch (err) {
-        setError('Failed to connect to backend')
-        setLoading(false)
-      }
-    }
-
-    checkHealth()
+    // MOCK: Simula resposta do backend para testes sem backend
+    setTimeout(() => {
+      setHealthStatus({ status: 'OK (mock)' })
+      setLoading(false)
+    }, 500)
   }, [])
 
   return (
     <>
+      {/* Login para teste */}
+      <Login />
+      {/* ...existing code... */}
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
