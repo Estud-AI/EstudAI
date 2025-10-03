@@ -1,0 +1,10 @@
+.aside {
+  width: 240px;
+  border-right: 1px solid var(--border);
+  padding: 16px;
+  height: calc(100vh - 56px);
+  background: var(--bg);
+}
+.nav { display: grid; gap: 8px; }
+.item { font-weight: 400; }
+.active { font-weight: 700; }

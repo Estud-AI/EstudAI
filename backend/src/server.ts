@@ -7,6 +7,7 @@ const cors = require("cors");
 const aiRouter = require("./routes/ai").default;
 const userRouter = require("./routes/user-register").default;
 const flashcardRouter = require("./routes/flashcard").default;
+const subjectsRouter = require("./routes/subjects").default;
 import type { Request, Response } from 'express';
 
 const app = express();
@@ -21,10 +22,11 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
 
-// Rota de AI
+// Rotas
 app.use("/api/ai", aiRouter);
 app.use("/api/user", userRouter);
 app.use("/api/flashcard", flashcardRouter);
+app.use("/api/subjects", subjectsRouter);
 
 // Start server
 app.listen(PORT, () => {

@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-white);
+}
+
+.login-form {
+  background: var(--gray-light);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(37, 99, 235, 0.08);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-form h2 {
+  text-align: center;
+  color: var(--primary-blue);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+label {
+  color: var(--gray-dark);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+input {
+  padding: 0.6em 0.9em;
+  border: 1px solid var(--gray-light);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--background-white);
+  color: var(--gray-dark);
+  outline: none;
+  transition: border 0.2s;
+}
+
+input:focus {
+  border-color: var(--primary-blue);
+}
+
+.input-error {
+  border-color: var(--secondary-green);
+}
+
+.error-msg {
+  color: var(--secondary-green);
+  font-size: 0.9rem;
+  margin-top: -0.3em;
+}
+
+button {
+  background: var(--primary-blue);
+  color: var(--background-white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.7em 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--secondary-green);
+}

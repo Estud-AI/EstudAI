@@ -1,0 +1,46 @@
+/* Variáveis de cor */
+:root {
+  --primary-blue: #2563eb;
+  --secondary-green: #22c55e;
+  --background-white: #ffffff;
+  --gray-light: #f3f4f6;
+  --gray-dark: #374151;
+}
+
+/* Fonte padrão */
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: var(--background-white);
+  color: var(--gray-dark);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--primary-blue);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--secondary-green);
+}
+
+button {
+  font-family: inherit;
+  background: var(--primary-blue);
+  color: var(--background-white);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--secondary-green);
+}
