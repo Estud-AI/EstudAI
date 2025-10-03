@@ -21,19 +21,16 @@ router.post("/", async (req: Request, res: Response) => {
 
     const subject = await prisma.subject.findUnique({
       where: { id: subjectId },
-      include: { flashcards: true },
+      include: { summaries: true },
     });
 
     if (!subject) {
       return res.status(404).json({ ok: false, error: "Subject not found." });
     }
 
-    const existingFronts = (subject.flashcards || []).map((f: any) => f.front?.trim()).filter(Boolean);
-
     const prompt = getPrompt(
-      "flashcards",
-      subject.name || "",
-      { existing_fronts: existingFronts.join("\n") }
+      "summary",
+      subject.name || ""
     );
 
     const aiResult = await askAI({ prompt, model: undefined, temperature: 0.2 });
@@ -48,40 +45,38 @@ router.post("/", async (req: Request, res: Response) => {
       }
     }
 
-    if (!parsed || !Array.isArray(parsed.flashcards)) {
+    if (!parsed || !parsed.summary) {
       return res.status(500).json({ ok: false, error: "Unexpected AI response format.", result: parsed });
     }
 
-    const toSave = [] as Array<{ front: string; back: string; level: string }>;
-    for (const fc of parsed.flashcards) {
-      if (!fc || !fc.frente || !fc.verso) continue;
-      const rawLevel = (fc.level || '').toString().trim().toUpperCase();
-      const level = ['EASY', 'MEDIUM', 'HARD'].includes(rawLevel) ? rawLevel : 'MEDIUM';
-      toSave.push({ front: fc.frente.trim(), back: fc.verso.trim(), level });
-      if (toSave.length >= 5) break;
+    // Extrair conteúdo do resumo da estrutura correta
+    const summaryData = parsed.summary;
+    const resumoTexto = JSON.stringify(summaryData, null, 2); // Convert the structured summary to formatted text
+    const resumoTitulo = `Resumo - ${subject.name}`;
+
+    if (!summaryData || Object.keys(summaryData).length === 0) {
+      return res.status(200).json({ ok: true, created: null, message: "No valid content returned by AI." });
     }
 
-    if (toSave.length === 0) {
-      return res.status(200).json({ ok: true, created: [], message: "No valid flashcards returned by AI." });
-    }
+    const newSummary = await prisma.summary.create({
+      data: {
+        text: resumoTexto.trim(),
+        name: resumoTitulo.trim(),
+        subjectId: subjectId,
+      },
+      include: {
+        subject: true
+      }
+    });
 
-    const created: any[] = [];
-    for (const nf of toSave) {
-      const createdFc = await prisma.flashcard.create({
-        data: {
-          front: nf.front,
-          back: nf.back,
-          level: nf.level,
-          subjectId: subjectId,
-        },
-      });
-      created.push(createdFc);
-    }
-
-    return res.status(201).json({ ok: true, created, duplicatedReported: parsed.duplicatas || [] });
+    return res.status(201).json({ 
+      ok: true, 
+      created: newSummary,
+      tema: subject.name
+    });
   } catch (err: any) {
-    console.error("Create flashcards error:", err?.message || err);
-    return res.status(500).json({ ok: false, error: "Failed to create flashcards" });
+    console.error("Create summary error:", err?.message || err);
+    return res.status(500).json({ ok: false, error: "Failed to create summary" });
   }
 });
 

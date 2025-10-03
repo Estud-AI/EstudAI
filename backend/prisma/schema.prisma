@@ -1,60 +1,47 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-// Application models based on the provided diagram
-enum Level {
-  EASY
-  MEDIUM
-  HARD
-}
-
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  photoURL  String?
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  photoURL    String?
   phoneNumber String?
-  dayStreak Int       @default(0)
-  subjects  Subject[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  dayStreak   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  subjects    Subject[]
 }
 
 model Subject {
-  id         Int        @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   name       String
-  progress  Int        @default(0)
+  progress   Int         @default(0)
   userId     Int
-  user       User       @relation(fields: [userId], references: [id])
-  summaries    Summary[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   flashcards Flashcard[]
-  tests  Test[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  user       User        @relation(fields: [userId], references: [id])
+  summaries  Summary[]
+  tests      Test[]
 }
 
 model Summary {
   id        Int      @id @default(autoincrement())
-  texto     String
-  nome      String
+  text      String
+  name      String
   subjectId Int
-  subject   Subject  @relation(fields: [subjectId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  subject   Subject  @relation(fields: [subjectId], references: [id])
 }
 
 model Flashcard {
@@ -63,35 +50,39 @@ model Flashcard {
   back      String
   level     Level
   subjectId Int
-  subject   Subject  @relation(fields: [subjectId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  subject   Subject  @relation(fields: [subjectId], references: [id])
 }
 
 model Test {
-  id          Int        @id @default(autoincrement())
-  name        String
-  attemps  Int        @default(0)
-  accurateAnswers Int       @default(0)
-  subjectId   Int
-  subject     Subject    @relation(fields: [subjectId], references: [id])
-  questions   Questions[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id              Int         @id @default(autoincrement())
+  name            String
+  attempts        Int         @default(0)
+  accurateAnswers Int         @default(0)
+  subjectId       Int
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  questions       Questions[]
+  subject         Subject     @relation(fields: [subjectId], references: [id])
 }
 
 model Questions {
-  id         Int      @id @default(autoincrement())
-  testId Int
-  quest      String
-  a1         String
-  a2         String
-  a3         String
-  a4         String
-  correctAnswer Int   // store 1..4 to indicate the correct option
-  test   Test @relation(fields: [testId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  testId        Int
+  question      String
+  option1       String
+  option2       String
+  option3       String
+  option4       String
+  correctAnswer Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  test          Test     @relation(fields: [testId], references: [id])
 }
 
-
+enum Level {
+  EASY
+  MEDIUM
+  HARD
+}
