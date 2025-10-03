@@ -19,7 +19,7 @@ function getQuestionLevel(index: number): 'EASY' | 'MEDIUM' | 'HARD' {
   return 'HARD';                       // Últimas 3 questões: HARD
 }
 
-router.post("/create", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   try {
     const { tema, userId } = req.body || {};
     

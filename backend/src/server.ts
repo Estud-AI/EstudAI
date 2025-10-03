@@ -8,7 +8,7 @@ const aiRouter = require("./routes/ai").default;
 const userRouter = require("./routes/user-register").default;
 const flashcardRouter = require("./routes/flashcard").default;
 const subjectsRouter = require("./routes/subjects").default;
-import type { Request, Response } from 'express';
+const summaryRouter = require("./routes/summary").default;
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,16 +17,12 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Health check
-app.get("/api/health", (req: Request, res: Response) => {
-  res.json({ status: "ok" });
-});
-
 // Rotas
 app.use("/api/ai", aiRouter);
 app.use("/api/user", userRouter);
 app.use("/api/flashcard", flashcardRouter);
 app.use("/api/subjects", subjectsRouter);
+app.use("/api/summary", summaryRouter);
 
 // Start server
 app.listen(PORT, () => {
