@@ -8,7 +8,7 @@ router.post("/ask", async (req: Request, res: Response) => {
   try {
     const { prompt, system, model, temperature } = req.body || {};
     if (!prompt || typeof prompt !== "string") {
-      return res.status(400).json({ error: "Campo 'prompt' é obrigatório." });
+      return res.status(400).json({ error: "Field 'prompt' is required." });
     }
 
     const result = await askAI({ prompt, system, model, temperature });
@@ -29,7 +29,7 @@ router.post("/ask", async (req: Request, res: Response) => {
     console.error("AI error:", err?.message || err);
     return res.status(500).json({
       ok: false,
-      error: "Falha ao consultar o modelo.",
+      error: "Failed to query AI model.",
       details: process.env.NODE_ENV === "development" ? String(err) : undefined,
     });
   }

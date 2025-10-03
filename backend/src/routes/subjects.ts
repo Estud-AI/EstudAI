@@ -24,11 +24,11 @@ router.post("/", async (req: Request, res: Response) => {
     const { tema, userId } = req.body || {};
     
     if (!tema || typeof tema !== "string") {
-      return res.status(400).json({ error: "Campo 'tema' é obrigatório." });
+      return res.status(400).json({ error: "Field 'tema' is required." });
     }
 
     if (!userId || typeof userId !== "number") {
-      return res.status(400).json({ error: "Campo 'userId' é obrigatório." });
+      return res.status(400).json({ error: "Field 'userId' is required." });
     }
 
     // Verificar se o usuário existe
@@ -79,8 +79,8 @@ router.post("/", async (req: Request, res: Response) => {
       const summaryText = JSON.stringify(parsedContent.summary);
       const summary = await tx.summary.create({
         data: {
-          nome: `Resumo: ${tema}`,
-          texto: summaryText,
+          name: `Resumo: ${tema}`,
+          text: summaryText,
           subjectId: subject.id
         }
       });
@@ -90,7 +90,7 @@ router.post("/", async (req: Request, res: Response) => {
         data: {
           name: `Simulado: ${tema}`,
           subjectId: subject.id,
-          attemps: 0,
+          attempts: 0,
           accurateAnswers: 0
         }
       });
@@ -101,11 +101,11 @@ router.post("/", async (req: Request, res: Response) => {
           return tx.questions.create({
             data: {
               testId: test.id,
-              quest: q.questao,
-              a1: q.A,
-              a2: q.B,
-              a3: q.C,
-              a4: q.D,
+              question: q.questao,
+              option1: q.A,
+              option2: q.B,
+              option3: q.C,
+              option4: q.D,
               correctAnswer: letterToNumber(q.resposta_correta)
             }
           });
@@ -239,7 +239,7 @@ router.get("/:id", async (req: Request, res: Response) => {
     });
 
     if (!subject) {
-      return res.status(404).json({ error: "Matéria não encontrada." });
+      return res.status(404).json({ error: "Subject not found." });
     }
 
     return res.json({

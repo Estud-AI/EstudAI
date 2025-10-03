@@ -12,11 +12,11 @@ router.post("/", async (req: Request, res: Response) => {
     const { userId, subjectId } = req.body || {};
 
     if (!userId || typeof userId !== "number") {
-      return res.status(400).json({ ok: false, error: "Campo 'userId' é obrigatório e deve ser um número." });
+      return res.status(400).json({ ok: false, error: "Field 'userId' is required and must be a number." });
     }
 
     if (!subjectId || typeof subjectId !== "number") {
-      return res.status(400).json({ ok: false, error: "Campo 'subjectId' é obrigatório e deve ser um número." });
+      return res.status(400).json({ ok: false, error: "Field 'subjectId' is required and must be a number." });
     }
 
     const subject = await prisma.subject.findUnique({
@@ -25,7 +25,7 @@ router.post("/", async (req: Request, res: Response) => {
     });
 
     if (!subject) {
-      return res.status(404).json({ ok: false, error: "Subject não encontrada." });
+      return res.status(404).json({ ok: false, error: "Subject not found." });
     }
 
     const existingFronts = (subject.flashcards || []).map((f: any) => f.front?.trim()).filter(Boolean);
@@ -44,12 +44,12 @@ router.post("/", async (req: Request, res: Response) => {
         const clean = aiResult.text.replace(/^```json\n?/, "").replace(/\n?```$/, "");
         parsed = JSON.parse(clean);
       } catch (parseErr) {
-        return res.status(500).json({ ok: false, error: "Não foi possível parsear a resposta da AI.", aiText: aiResult.text });
+        return res.status(500).json({ ok: false, error: "Could not parse AI response.", aiText: aiResult.text });
       }
     }
 
     if (!parsed || !Array.isArray(parsed.flashcards)) {
-      return res.status(500).json({ ok: false, error: "Formato inesperado da resposta da AI.", result: parsed });
+      return res.status(500).json({ ok: false, error: "Unexpected AI response format.", result: parsed });
     }
 
     const toSave = [] as Array<{ front: string; back: string; level: string }>;
@@ -62,7 +62,7 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     if (toSave.length === 0) {
-      return res.status(200).json({ ok: true, created: [], message: "Nenhum flashcard válido retornado pela AI." });
+      return res.status(200).json({ ok: true, created: [], message: "No valid flashcards returned by AI." });
     }
 
     const created: any[] = [];

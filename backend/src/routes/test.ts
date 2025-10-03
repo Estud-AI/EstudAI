@@ -12,11 +12,11 @@ router.post("/", async (req: Request, res: Response) => {
     const { userId, subjectId } = req.body || {};
 
     if (!userId || typeof userId !== "number") {
-      return res.status(400).json({ ok: false, error: "Campo 'userId' é obrigatório e deve ser um número." });
+      return res.status(400).json({ ok: false, error: "Field 'userId' is required and must be a number." });
     }
 
     if (!subjectId || typeof subjectId !== "number") {
-      return res.status(400).json({ ok: false, error: "Campo 'subjectId' é obrigatório e deve ser um número." });
+      return res.status(400).json({ ok: false, error: "Field 'subjectId' is required and must be a number." });
     }
 
     const subject = await prisma.subject.findUnique({
@@ -25,7 +25,7 @@ router.post("/", async (req: Request, res: Response) => {
     });
 
     if (!subject) {
-      return res.status(404).json({ ok: false, error: "Subject não encontrada." });
+      return res.status(404).json({ ok: false, error: "Subject not found." });
     }
 
     const prompt = getPrompt(
@@ -41,20 +41,20 @@ router.post("/", async (req: Request, res: Response) => {
         const clean = aiResult.text.replace(/^```json\n?/, "").replace(/\n?```$/, "");
         parsed = JSON.parse(clean);
       } catch (parseErr) {
-        return res.status(500).json({ ok: false, error: "Não foi possível parsear a resposta da AI.", aiText: aiResult.text });
+        return res.status(500).json({ ok: false, error: "Could not parse AI response.", aiText: aiResult.text });
       }
     }
 
     if (!parsed || !Array.isArray(parsed.simulado)) {
-      return res.status(500).json({ ok: false, error: "Formato inesperado da resposta da AI.", result: parsed });
+      return res.status(500).json({ ok: false, error: "Unexpected AI response format.", result: parsed });
     }
 
     const toSave = [] as Array<{
-      quest: string;
-      a1: string;
-      a2: string;
-      a3: string;
-      a4: string;
+      question: string;
+      option1: string;
+      option2: string;
+      option3: string;
+      option4: string;
       correctAnswer: number;
     }>;
 
@@ -75,11 +75,11 @@ router.post("/", async (req: Request, res: Response) => {
       }
 
       toSave.push({
-        quest: question.questao.trim(),
-        a1: question.A.trim(),
-        a2: question.B.trim(),
-        a3: question.C.trim(),
-        a4: question.D.trim(),
+        question: question.questao.trim(),
+        option1: question.A.trim(),
+        option2: question.B.trim(),
+        option3: question.C.trim(),
+        option4: question.D.trim(),
         correctAnswer: correctAnswer,
       });
 
@@ -87,7 +87,7 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     if (toSave.length === 0) {
-      return res.status(200).json({ ok: true, created: null, message: "Nenhuma questão válida retornada pela AI." });
+      return res.status(200).json({ ok: true, created: null, message: "No valid questions returned by AI." });
     }
 
     // Create the test first
@@ -104,11 +104,11 @@ router.post("/", async (req: Request, res: Response) => {
       const createdQuestion = await prisma.questions.create({
         data: {
           testId: newTest.id,
-          quest: question.quest,
-          a1: question.a1,
-          a2: question.a2,
-          a3: question.a3,
-          a4: question.a4,
+          question: question.question,
+          option1: question.option1,
+          option2: question.option2,
+          option3: question.option3,
+          option4: question.option4,
           correctAnswer: question.correctAnswer,
         },
       });

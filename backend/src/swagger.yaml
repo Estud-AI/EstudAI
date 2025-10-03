@@ -1,0 +1,531 @@
+openapi: 3.0.0
+info:
+  title: EstudAI API
+  version: 1.0.0
+  description: API for educational AI-powered platform with flashcards, summaries, and tests
+  contact:
+    name: EstudAI Team
+    email: support@estudai.com
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        photoURL:
+          type: string
+          nullable: true
+          example: "https://example.com/photo.jpg"
+        phoneNumber:
+          type: string
+          nullable: true
+          example: "+5511999999999"
+        dayStreak:
+          type: integer
+          default: 0
+          example: 5
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Subject:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Mathematics"
+        progress:
+          type: integer
+          default: 0
+          example: 75
+        userId:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Flashcard:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        front:
+          type: string
+          example: "What is the Pythagorean theorem?"
+        back:
+          type: string
+          example: "a² + b² = c²"
+        level:
+          type: string
+          enum: [EASY, MEDIUM, HARD]
+          example: "MEDIUM"
+        subjectId:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Summary:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        text:
+          type: string
+          example: "Complete summary of the topic..."
+        name:
+          type: string
+          example: "Summary - Mathematics"
+        subjectId:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Test:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Test - Mathematics"
+        attempts:
+          type: integer
+          default: 0
+          example: 2
+        accurateAnswers:
+          type: integer
+          default: 0
+          example: 8
+        subjectId:
+          type: integer
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        testId:
+          type: integer
+          example: 1
+        question:
+          type: string
+          example: "What is 2 + 2?"
+        option1:
+          type: string
+          example: "3"
+        option2:
+          type: string
+          example: "4"
+        option3:
+          type: string
+          example: "5"
+        option4:
+          type: string
+          example: "6"
+        correctAnswer:
+          type: integer
+          minimum: 1
+          maximum: 4
+          example: 2
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Error message"
+
+    Success:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation successful"
+
+    RequestBody:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 1
+        subjectId:
+          type: integer
+          example: 1
+
+paths:
+  /api/flashcard:
+    post:
+      tags:
+        - Flashcards
+      summary: Create new flashcards for a subject
+      description: Generates AI-powered flashcards for a specific subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBody'
+      responses:
+        '201':
+          description: Flashcards created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  created:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Flashcard'
+                  duplicatedReported:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Bad request - missing or invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Subject not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/summary:
+    post:
+      tags:
+        - Summaries
+      summary: Create a new summary for a subject
+      description: Generates AI-powered summary for a specific subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBody'
+      responses:
+        '201':
+          description: Summary created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  created:
+                    $ref: '#/components/schemas/Summary'
+                  theme:
+                    type: string
+                    example: "Mathematics"
+        '400':
+          description: Bad request - missing or invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Subject not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/test:
+    post:
+      tags:
+        - Tests
+      summary: Create a new test for a subject
+      description: Generates AI-powered test with questions for a specific subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBody'
+      responses:
+        '201':
+          description: Test created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  created:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      attempts:
+                        type: integer
+                      accurateAnswers:
+                        type: integer
+                      subjectId:
+                        type: integer
+                      questions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Question'
+                      subject:
+                        $ref: '#/components/schemas/Subject'
+                  theme:
+                    type: string
+                    example: "Mathematics"
+        '400':
+          description: Bad request - missing or invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Subject not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/subjects:
+    get:
+      tags:
+        - Subjects
+      summary: Get all subjects for a user
+      description: Retrieves all subjects associated with a specific user
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: integer
+          description: User ID to get subjects for
+      responses:
+        '200':
+          description: Subjects retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  subjects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Subject'
+        '400':
+          description: Bad request - missing user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Subjects
+      summary: Create a new subject
+      description: Creates a new subject for a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - userId
+              properties:
+                name:
+                  type: string
+                  example: "Mathematics"
+                userId:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Subject created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  subject:
+                    $ref: '#/components/schemas/Subject'
+        '400':
+          description: Bad request - missing or invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user/register:
+    post:
+      tags:
+        - Users
+      summary: Register a new user
+      description: Creates a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john@example.com"
+                photoURL:
+                  type: string
+                  nullable: true
+                  example: "https://example.com/photo.jpg"
+                phoneNumber:
+                  type: string
+                  nullable: true
+                  example: "+5511999999999"
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request - missing or invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+tags:
+  # - name: AI
+  #   description: AI-powered content generation
+  - name: Users
+    description: User management operations
+  - name: Subjects
+    description: Subject management operations
+  - name: Flashcards
+    description: Flashcard generation and management
+  - name: Summaries
+    description: Summary generation and management
+  - name: Tests
+    description: Test generation and management
