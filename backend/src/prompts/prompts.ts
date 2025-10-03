@@ -23,12 +23,21 @@ const prompts: Prompts = JSON.parse(
  * @param tema - Tema da matéria
  * @returns Prompt formatado
  */
-export function getPrompt(type: PromptType, tema: string): string {
+export function getPrompt(type: PromptType, tema: string, placeholders?: Record<string, string>): string {
   if (!prompts[type]) {
     throw new Error(`Tipo de prompt '${type}' não encontrado`);
   }
-  
-  return prompts[type].replace('{tema}', tema);
+
+  let result = prompts[type].replace('{tema}', tema);
+
+  if (placeholders) {
+    for (const key of Object.keys(placeholders)) {
+      const token = `{${key}}`;
+      result = result.replace(new RegExp(token, 'g'), placeholders[key]);
+    }
+  }
+
+  return result;
 }
 
 export { prompts };
