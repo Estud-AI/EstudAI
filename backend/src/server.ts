@@ -9,6 +9,7 @@ const userRouter = require("./routes/user-register").default;
 const flashcardRouter = require("./routes/flashcard").default;
 const subjectsRouter = require("./routes/subjects").default;
 const summaryRouter = require("./routes/summary").default;
+const testRouter = require("./routes/test").default;
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,6 +24,7 @@ app.use("/api/user", userRouter);
 app.use("/api/flashcard", flashcardRouter);
 app.use("/api/subjects", subjectsRouter);
 app.use("/api/summary", summaryRouter);
+app.use("/api/test", testRouter);
 
 // Start server
 app.listen(PORT, () => {
