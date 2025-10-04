@@ -7,7 +7,7 @@ const MOCK_EMAIL = 'teste@estudai.com';
 const MOCK_PASSWORD = '123456';
 
 
-export default function Login({ onShowRegister }) {
+export default function Login({ onShowRegister, onLoginSuccess }) {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = ({ email, password }) => {
@@ -15,6 +15,9 @@ export default function Login({ onShowRegister }) {
     const found = users.find(u => u.email === email && u.password === password);
     if (found) {
       toast.success('Login realizado com sucesso!');
+      setTimeout(() => {
+        if (onLoginSuccess) onLoginSuccess();
+      }, 1200);
     } else {
       toast.error('Email ou senha inválidos.');
     }

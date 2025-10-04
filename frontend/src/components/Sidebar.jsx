@@ -1,21 +1,14 @@
-import { Link, useLocation } from 'react-router-dom';
-import styles from './Sidebar.module.css';
-
-function Item({ to, children }) {
-  const { pathname } = useLocation();
-  const active = pathname === to || pathname.startsWith(to + '/');
-  return (
-    <Link className={`${styles.item} ${active ? styles.active : ''}`} to={to}>
-      {children}
-    </Link>
-  );
-}
+import React from 'react';
+import '../styles/sidebar.css';
 
 export default function Sidebar() {
   return (
-    <aside className={styles.aside}>
-      <nav className={styles.nav}>
-        <Item to="/materias">Matérias</Item>
+    <aside className="sidebar">
+      <nav className="sidebar-menu">
+        <a href="#" className="sidebar-link">Início</a>
+        <a href="#" className="sidebar-link">Matérias</a>
+        <a href="#" className="sidebar-link">Quizzes</a>
+        <a href="#" className="sidebar-link">Perfil</a>
       </nav>
     </aside>
   );
