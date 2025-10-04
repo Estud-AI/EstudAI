@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/login.css';
-
 const MOCK_EMAIL = 'teste@estudai.com';
 const MOCK_PASSWORD = '123456';
 
@@ -21,9 +20,9 @@ export default function Login() {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
-        <h2>Login</h2>
+        <h2 className="login-title">Conecte-se</h2>
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">E-mail</label>
           <input
             id="email"
             type="email"

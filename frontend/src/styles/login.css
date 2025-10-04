@@ -20,7 +20,7 @@
   gap: 1.5rem;
 }
 
-.login-form h2 {
+.login-title {
   text-align: center;
   color: var(--primary-blue);
   font-weight: 600;
