@@ -6,11 +6,14 @@ import '../styles/login.css';
 const MOCK_EMAIL = 'teste@estudai.com';
 const MOCK_PASSWORD = '123456';
 
-export default function Login() {
+
+export default function Login({ onShowRegister }) {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = ({ email, password }) => {
-    if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const found = users.find(u => u.email === email && u.password === password);
+    if (found) {
       toast.success('Login realizado com sucesso!');
     } else {
       toast.error('Email ou senha inválidos.');
@@ -43,7 +46,10 @@ export default function Login() {
           />
           {errors.password && <span className="error-msg">{errors.password.message}</span>}
         </div>
-        <button type="submit">Entrar</button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+          <button type="submit">Entrar</button>
+          <button type="button" className="register-btn" onClick={onShowRegister}>Cadastre-se</button>
+        </div>
       </form>
       <ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="colored" />
     </div>
