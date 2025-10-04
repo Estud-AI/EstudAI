@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +10,7 @@ const MOCK_PASSWORD = '123456';
 
 export default function Login({ onShowRegister, onLoginSuccess }) {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = ({ email, password }) => {
     const users = JSON.parse(localStorage.getItem('users') || '[]');
@@ -17,6 +19,7 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
       toast.success('Login realizado com sucesso!');
       setTimeout(() => {
         if (onLoginSuccess) onLoginSuccess();
+        navigate('/home');
       }, 1200);
     } else {
       toast.error('Email ou senha inválidos.');

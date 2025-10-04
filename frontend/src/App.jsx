@@ -1,49 +1,33 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Navbar from './components/Navbar'
-import Sidebar from './components/Sidebar'
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
 
-  // Função chamada após login bem-sucedido
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
   };
-
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
 
-  if (!isLoggedIn) {
-    return (
-      <>
-        {showRegister ? (
-          <Register onShowLogin={() => setShowRegister(false)} />
-        ) : (
-          <Login onShowRegister={() => setShowRegister(true)} onLoginSuccess={handleLoginSuccess} />
-        )}
-      </>
-    );
-  }
-
-  // Após login, mostra Navbar e Sidebar
   return (
-    <>
-      <Navbar onLogout={handleLogout} />
-      <div style={{ display: 'flex' }}>
-        <Sidebar />
-        <main style={{ flex: 1, padding: '2rem' }}>
-          {/* Conteúdo principal */}
-          <h2>Bem-vindo ao EstudAI!</h2>
-        </main>
-      </div>
-    </>
+    <Router>
+      <ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="colored" />
+      <Routes>
+        <Route path="/" element={<Login onShowRegister={() => window.location.replace('/register')} onLoginSuccess={handleLoginSuccess} />} />
+        <Route path="/login" element={<Login onShowRegister={() => window.location.replace('/register')} onLoginSuccess={handleLoginSuccess} />} />
+        <Route path="/register" element={<Register onShowLogin={() => window.location.replace('/login')} />} />
+        <Route path="/home" element={
+          isLoggedIn ? <Home /> : <Navigate to="/login" />
+        } />
+      </Routes>
+    </Router>
   );
 }
 
