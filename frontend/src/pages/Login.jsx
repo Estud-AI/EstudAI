@@ -57,7 +57,7 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
           <button type="button" className="register-btn" onClick={onShowRegister}>Cadastre-se</button>
         </div>
       </form>
-      <ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="colored" />
+  {/* ToastContainer removido, já está global no App.jsx */}
     </div>
   );
 }

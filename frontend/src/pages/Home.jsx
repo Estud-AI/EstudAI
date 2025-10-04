@@ -6,7 +6,7 @@ import '../styles/home.css';
 export default function Home() {
   return (
     <div>
-      <Navbar />
+  {/* Navbar removida, já é exibida globalmente via App.jsx */}
       <div className="home-layout">
         <Sidebar />
         <main className="home-main">
