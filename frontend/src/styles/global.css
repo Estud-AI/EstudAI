@@ -1,3 +1,5 @@
+/* Removido Tailwind. Apenas CSS customizado abaixo. */
+
 /* Variáveis de cor */
 :root {
   --primary-blue: #2563eb;
@@ -44,3 +46,4 @@ button {
 button:hover {
   background: var(--secondary-green);
 }
+/* Tailwind removido. Apenas CSS customizado abaixo. */

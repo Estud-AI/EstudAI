@@ -1,18 +1,26 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/login.css';
-
 const MOCK_EMAIL = 'teste@estudai.com';
 const MOCK_PASSWORD = '123456';
 
-export default function Login() {
+
+export default function Login({ onShowRegister, onLoginSuccess }) {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate();
 
   const onSubmit = ({ email, password }) => {
-    if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const found = users.find(u => u.email === email && u.password === password);
+    if (found) {
       toast.success('Login realizado com sucesso!');
+      setTimeout(() => {
+        if (onLoginSuccess) onLoginSuccess();
+        navigate('/home');
+      }, 1200);
     } else {
       toast.error('Email ou senha inválidos.');
     }
@@ -21,9 +29,9 @@ export default function Login() {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
-        <h2>Login</h2>
+        <h2 className="login-title">Conecte-se</h2>
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">E-mail</label>
           <input
             id="email"
             type="email"
@@ -44,9 +52,12 @@ export default function Login() {
           />
           {errors.password && <span className="error-msg">{errors.password.message}</span>}
         </div>
-        <button type="submit">Entrar</button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+          <button type="submit">Entrar</button>
+          <button type="button" className="register-btn" onClick={onShowRegister}>Cadastre-se</button>
+        </div>
       </form>
-      <ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="colored" />
+  {/* ToastContainer removido, já está global no App.jsx */}
     </div>
   );
 }
