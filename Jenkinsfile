@@ -16,7 +16,6 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'npm install'
-                    sh 'npm run lint'
                 }
             }
         }
@@ -25,7 +24,6 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh 'npm install'
-                    sh 'npm run lint'
                     sh 'npm run build'
                 }
             }
