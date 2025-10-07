@@ -6,11 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Check') {
-            steps {
-                echo "✅ Jenkinsfile correto rodando!"
-            }
-        }
         stage('Checkout') {
             steps {
                 checkout scm
