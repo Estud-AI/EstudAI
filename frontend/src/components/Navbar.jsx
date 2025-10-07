@@ -1,24 +1,11 @@
-import { getCurrentUser, logout } from '../auth/auth';
-import styles from './Navbar.module.css';
+import React from 'react';
+import '../styles/navbar.css';
 
-export default function Navbar() {
-  const user = getCurrentUser();
-  function handleLogout() {
-    logout();
-    window.location.href = '/login';
-  }
-
+export default function Navbar({ onLogout }) {
   return (
-    <header className={styles.header}>
-      <strong className={styles.brand}>EstudAI</strong>
-      <div className={styles.right}>
-        {user && (
-          <>
-            <span className={styles.streak}>{user.name} · 🔥 {user.dayStreak}d</span>
-            <button className="btn" onClick={handleLogout}>Sair</button>
-          </>
-        )}
-      </div>
-    </header>
+    <nav className="navbar">
+      <div className="navbar-title">EstudAI</div>
+  <button className="navbar-logout" onClick={onLogout}>Desconectar-se</button>
+    </nav>
   );
 }

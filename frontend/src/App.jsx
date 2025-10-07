@@ -1,54 +1,52 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Login from './pages/Login'
+
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
+import MateriasList from './pages/materias/MateriasList';
+import MateriaDetail from './pages/materias/MateriaDetail';
+import FlashcardList from './pages/materias/FlashcardList';
+import ResumoList from './pages/materias/ResumoList';
+import SimuladoList from './pages/materias/SimuladoList';
+import SimuladoDetail from './pages/materias/SimuladoDetail';
+import { ToastContainer } from 'react-toastify';
+import Navbar from './components/Navbar';
 
 function App() {
-  const [healthStatus, setHealthStatus] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [shouldLogout, setShouldLogout] = useState(false);
 
-  useEffect(() => {
-    // MOCK: Simula resposta do backend para testes sem backend
-    setTimeout(() => {
-      setHealthStatus({ status: 'OK (mock)' })
-      setLoading(false)
-    }, 500)
-  }, [])
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setShouldLogout(false);
+  };
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setShouldLogout(true);
+  };
 
   return (
-    <>
-      {/* Login para teste */}
-      <Login />
-      {/* ...existing code... */}
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>EstudAI - Full Stack Template</h1>
-      <div className="card">
-        <h2>Backend Health Status</h2>
-        {loading && <p>Checking backend connection...</p>}
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-        {healthStatus && (
-          <div style={{ padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px' }}>
-            <p>Backend Status: <strong>{healthStatus.status}</strong></p>
-            <p style={{ fontSize: '14px', color: '#666' }}>
-              Successfully connected to backend at http://localhost:3001/api/health
-            </p>
-          </div>
-        )}
-      </div>
-      <p className="read-the-docs">
-        Full-Stack template with Node.js (Express) + React (Vite)
-      </p>
-    </>
-  )
+    <Router>
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar theme="colored" closeOnClick pauseOnHover={false} />
+      {isLoggedIn && <Navbar onLogout={handleLogout} />}
+      {shouldLogout && <Navigate to="/login" replace />}
+      <Routes>
+        <Route path="/" element={<Login onShowRegister={() => window.location.replace('/register')} onLoginSuccess={handleLoginSuccess} />} />
+        <Route path="/login" element={<Login onShowRegister={() => window.location.replace('/register')} onLoginSuccess={handleLoginSuccess} />} />
+        <Route path="/register" element={<Register onShowLogin={() => window.location.replace('/login')} />} />
+        <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/login" />} />
+        <Route path="/materias" element={isLoggedIn ? <MateriasList /> : <Navigate to="/login" />} />
+        <Route path="/materias/:id" element={isLoggedIn ? <MateriaDetail /> : <Navigate to="/login" />} />
+        <Route path="/materias/flashcards" element={isLoggedIn ? <FlashcardList /> : <Navigate to="/login" />} />
+        <Route path="/materias/resumos" element={isLoggedIn ? <ResumoList /> : <Navigate to="/login" />} />
+        <Route path="/simulados" element={isLoggedIn ? <SimuladoList /> : <Navigate to="/login" />} />
+        <Route path="/simulados/:id" element={isLoggedIn ? <SimuladoDetail /> : <Navigate to="/login" />} />
+        <Route path="/quizzes" element={isLoggedIn ? <SimuladoList /> : <Navigate to="/login" />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App

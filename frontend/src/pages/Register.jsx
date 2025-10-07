@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import logoEstudai from '../assets/logo/icon_estudai.png';
 
-export default function Login({ onShowRegister, onLoginSuccess }) {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+export default function Register({ onShowLogin }) {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const onSubmit = async ({ email, password }) => {
+  const onSubmit = async ({ name, email, password }) => {
     setIsLoading(true);
     
-    // Simular delay de rede para mostrar loading
+    // Simular delay de rede
     await new Promise(resolve => setTimeout(resolve, 800));
     
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const found = users.find(u => u.email === email && u.password === password);
+    const alreadyExists = users.some(u => u.email === email);
     
-    if (found) {
-      toast.success('Login realizado com sucesso!');
+    if (alreadyExists) {
+      setIsLoading(false);
+      toast.error('Este e-mail já está registrado.');
+    } else {
+      users.push({ name, email, password });
+      localStorage.setItem('users', JSON.stringify(users));
+      toast.success('Registro realizado com sucesso!');
       setTimeout(() => {
         setIsLoading(false);
-        if (onLoginSuccess) onLoginSuccess();
-        navigate('/home');
+        if (onShowLogin) onShowLogin();
       }, 1200);
-    } else {
-      setIsLoading(false);
-      toast.error('Email ou senha inválidos.');
     }
   };
 
@@ -38,21 +37,52 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
         <div className="bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-sm border border-white/20">
           {/* Logo Icon */}
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-estudai-blue to-estudai-green rounded-2xl shadow-lg flex items-center justify-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-estudai-green to-estudai-blue rounded-2xl shadow-lg flex items-center justify-center">
               <img src={logoEstudai} alt="EstudAI" className="w-10 h-10 object-contain" />
             </div>
           </div>
 
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Entre com sua conta</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Criar nova conta</h1>
             <p className="text-gray-600 text-sm">
-              Acesse sua plataforma de estudos personalizada com IA.
+              Junte-se à nossa plataforma de estudos com IA.
             </p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Name Field */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                Nome completo
+              </label>
+              <div className="relative">
+                <input
+                  id="name"
+                  type="text"
+                  {...register('name', { 
+                    required: 'Nome obrigatório',
+                    minLength: {
+                      value: 2,
+                      message: 'Nome deve ter pelo menos 2 caracteres'
+                    }
+                  })}
+                  className="w-full px-4 py-3 bg-gray-100 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-estudai-green focus:bg-white transition duration-200"
+                  placeholder="Digite seu nome completo"
+                  autoComplete="name"
+                />
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              </div>
+              {errors.name && (
+                <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>
+              )}
+            </div>
+
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -69,8 +99,9 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
                       message: "Email inválido"
                     }
                   })}
-                  className="w-full px-4 py-3 bg-gray-100 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-estudai-blue focus:bg-white transition duration-200"
+                  className="w-full px-4 py-3 bg-gray-100 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-estudai-green focus:bg-white transition duration-200"
                   placeholder="Digite seu email"
+                  autoComplete="username"
                 />
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -92,15 +123,16 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
                 <input
                   id="password"
                   type="password"
-                  {...register('password', { 
+                  {...register('password', {
                     required: 'Senha obrigatória',
-                    minLength: {
-                      value: 6,
-                      message: 'Senha deve ter pelo menos 6 caracteres'
+                    minLength: { 
+                      value: 6, 
+                      message: 'Senha deve ter pelo menos 6 caracteres' 
                     }
                   })}
-                  className="w-full px-4 py-3 bg-gray-100 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-estudai-blue focus:bg-white transition duration-200"
-                  placeholder="Digite sua senha"
+                  className="w-full px-4 py-3 bg-gray-100 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-estudai-green focus:bg-white transition duration-200"
+                  placeholder="Crie uma senha (mín. 6 caracteres)"
+                  autoComplete="new-password"
                 />
                 <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -113,31 +145,22 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
               )}
             </div>
 
-            {/* Forgot Password */}
-            <div className="text-right">
-              <a href="#" className="text-sm text-estudai-blue hover:text-estudai-green font-medium">
-                Esqueceu a senha?
-              </a>
-            </div>
-
-
-
             {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
               className="w-full py-3 px-4 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-xl transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-            {isLoading ? (
+              {isLoading ? (
                 <div className="flex items-center justify-center">
                   <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Entrando...
+                  Criando conta...
                 </div>
               ) : (
-                'Entrar'
+                'Criar conta'
               )}
             </button>
           </form>
@@ -148,7 +171,7 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Ou entre com</span>
+              <span className="px-2 bg-white text-gray-500">Ou cadastre-se com</span>
             </div>
           </div>
 
@@ -164,15 +187,15 @@ export default function Login({ onShowRegister, onLoginSuccess }) {
             </button>
           </div>
 
-          {/* Sign up section */}
+          {/* Login link */}
           <div className="text-center mt-8">
             <p className="text-sm text-gray-600">
-              Ainda não tem uma conta?{' '}
+              Já tem uma conta?{' '}
               <button
-                onClick={onShowRegister}
+                onClick={onShowLogin}
                 className="font-medium text-estudai-blue hover:text-estudai-green transition-colors duration-200 underline bg-transparent border-none p-0 m-0"
               >
-                Criar conta gratuita
+                Fazer login
               </button>
             </p>
           </div>

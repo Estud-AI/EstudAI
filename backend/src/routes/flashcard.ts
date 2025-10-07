@@ -7,13 +7,11 @@ const prisma = require("../lib/prisma").default;
 
 const router = express.Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.get("/:subjectId", async (req: Request, res: Response) => {
   try {
-    const { userId, subjectId } = req.body || {};
+    const subjectId = Number(req.params.subjectId);
 
-    if (!userId || typeof userId !== "number") {
-      return res.status(400).json({ ok: false, error: "Field 'userId' is required and must be a number." });
-    }
+    console.log("Fetching flashcards for subjectId:", subjectId);
 
     if (!subjectId || typeof subjectId !== "number") {
       return res.status(400).json({ ok: false, error: "Field 'subjectId' is required and must be a number." });
