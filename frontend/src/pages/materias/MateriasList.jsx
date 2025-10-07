@@ -2,13 +2,15 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/api';
 import styles from './MateriasList.module.css';
+import { Link } from 'react-router-dom';
 
 export default function MateriasList() {
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    api.get('/api/materias').then(r => setItems(r.data || [])).catch(() => setItems([]));
-  }, []);
+  // Conteúdo fictício para teste
+  const items = [
+    { id: 1, name: 'Matemática', progresso: 80 },
+    { id: 2, name: 'Português', progresso: 60 },
+    { id: 3, name: 'História', progresso: 40 }
+  ];
 
   return (
     <div className="container">
@@ -21,6 +23,7 @@ export default function MateriasList() {
           </li>
         ))}
       </ul>
+      <Link to="/home" style={{marginTop: '2rem', display: 'inline-block', color: 'var(--primary-blue)', fontWeight: 600}}>Voltar para Início</Link>
     </div>
   );
 }
