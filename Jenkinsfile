@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS" // nome da instalação do Node configurada no Jenkins
+        nodejs "NodeJS" 
     }
 
     stages {
@@ -32,10 +32,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Pipeline executada com sucesso!'
+            githubNotify context: 'ci/jenkins', description: 'Build passed', status: 'SUCCESS'
         }
         failure {
-            echo '❌ Pipeline falhou, não será aceito.'
+            githubNotify context: 'ci/jenkins', description: 'Build failed', status: 'FAILURE'
         }
     }
 }
