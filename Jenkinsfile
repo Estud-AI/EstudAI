@@ -30,12 +30,12 @@ pipeline {
         }
     }
 
-    post {
+     post {
         success {
-            githubNotify context: 'ci/jenkins', description: 'Build passed', status: 'SUCCESS'
+            echo '✅ Pipeline executada com sucesso!'
         }
         failure {
-            githubNotify context: 'ci/jenkins', description: 'Build failed', status: 'FAILURE'
+            echo '❌ Pipeline falhou, não será aceito.'
         }
     }
 }
