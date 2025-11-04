@@ -5,14 +5,17 @@ import './App.css';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
-import MateriasList from './pages/materias/MateriasList';
-import MateriaDetail from './pages/materias/MateriaDetail';
-import FlashcardList from './pages/materias/FlashcardList';
-import ResumoList from './pages/materias/ResumoList';
-import SimuladoList from './pages/materias/SimuladoList';
-import SimuladoDetail from './pages/materias/SimuladoDetail';
+import SubjectsList from './pages/subjects/SubjectsList';
+import SubjectDetail from './pages/subjects/SubjectDetail';
+import FlashcardList from './pages/flashcards/FlashcardList';
+import SummaryList from './pages/summaries/SummaryList';
+import SummaryDetail from './pages/summaries/SummaryDetail';
+import QuizList from './pages/quizzes/QuizList';
+import QuizDetail from './pages/quizzes/QuizDetail';
+import Profile from './pages/profile/Profile';
+import AppLayout from './layout/AppLayout';
 import { ToastContainer } from 'react-toastify';
-import Navbar from './components/Navbar';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,6 +25,7 @@ function App() {
     setIsLoggedIn(true);
     setShouldLogout(false);
   };
+  
   const handleLogout = () => {
     setIsLoggedIn(false);
     setShouldLogout(true);
@@ -30,23 +34,27 @@ function App() {
   return (
     <Router>
       <ToastContainer position="top-center" autoClose={3000} hideProgressBar theme="colored" closeOnClick pauseOnHover={false} />
-      {isLoggedIn && <Navbar onLogout={handleLogout} />}
       {shouldLogout && <Navigate to="/login" replace />}
       <Routes>
         <Route path="/" element={<Login onShowRegister={() => window.location.replace('/register')} onLoginSuccess={handleLoginSuccess} />} />
         <Route path="/login" element={<Login onShowRegister={() => window.location.replace('/register')} onLoginSuccess={handleLoginSuccess} />} />
         <Route path="/register" element={<Register onShowLogin={() => window.location.replace('/login')} />} />
-        <Route path="/home" element={isLoggedIn ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/materias" element={isLoggedIn ? <MateriasList /> : <Navigate to="/login" />} />
-        <Route path="/materias/:id" element={isLoggedIn ? <MateriaDetail /> : <Navigate to="/login" />} />
-        <Route path="/materias/flashcards" element={isLoggedIn ? <FlashcardList /> : <Navigate to="/login" />} />
-        <Route path="/materias/resumos" element={isLoggedIn ? <ResumoList /> : <Navigate to="/login" />} />
-        <Route path="/simulados" element={isLoggedIn ? <SimuladoList /> : <Navigate to="/login" />} />
-        <Route path="/simulados/:id" element={isLoggedIn ? <SimuladoDetail /> : <Navigate to="/login" />} />
-        <Route path="/quizzes" element={isLoggedIn ? <SimuladoList /> : <Navigate to="/login" />} />
+        
+        {/* Protected routes with layout */}
+        <Route element={isLoggedIn ? <AppLayout onLogout={handleLogout} /> : <Navigate to="/login" />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/subjects" element={<SubjectsList />} />
+          <Route path="/subjects/:id" element={<SubjectDetail />} />
+          <Route path="/flashcards" element={<FlashcardList />} />
+          <Route path="/summaries" element={<SummaryList />} />
+          <Route path="/summaries/:id" element={<SummaryDetail />} />
+          <Route path="/quizzes" element={<QuizList />} />
+          <Route path="/quizzes/:id" element={<QuizDetail />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
     </Router>
   );
 }
 
-export default App
+export default App;
