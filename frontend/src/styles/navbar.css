@@ -1,33 +1,62 @@
 .navbar {
-  width: 100%;
-  height: 60px;
-  background: var(--primary-blue);
-  color: var(--background-white);
+  width: calc(100% - 260px);
+  height: 64px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar-content {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
 }
 
 .navbar-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.navbar-logout {
-  background: var(--secondary-green);
-  color: var(--background-white);
-  border: none;
-  border-radius: 6px;
-  padding: 0.5em 1em;
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
-.navbar-logout:hover {
-  background: var(--primary-blue);
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.navbar-button:hover {
+  background: var(--accent-light);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.navbar-button svg {
+  flex-shrink: 0;
 }
