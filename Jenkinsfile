@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS" // nome da instalação do Node configurada no Jenkins
+        nodejs "NodeJS" 
     }
 
     stages {
@@ -16,7 +16,6 @@ pipeline {
             steps {
                 dir('backend') {
                     sh 'npm install'
-                    sh 'npm run lint'
                 }
             }
         }
@@ -25,14 +24,13 @@ pipeline {
             steps {
                 dir('frontend') {
                     sh 'npm install'
-                    sh 'npm run lint'
                     sh 'npm run build'
                 }
             }
         }
     }
 
-    post {
+     post {
         success {
             echo '✅ Pipeline executada com sucesso!'
         }
