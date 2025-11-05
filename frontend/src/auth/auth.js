@@ -52,10 +52,25 @@ export async function login({ email, password }) {
     const user = userCredential.user;
     const token = await user.getIdToken();
     
-    // Salvar dados localmente
+    // Tentar buscar usuário no backend
+    let backendUser = null;
+    try {
+      const response = await api.get(`/api/user/user-by-email/${encodeURIComponent(user.email)}`);
+      backendUser = response.data.user;
+    } catch (error) {
+      // Se não encontrar, criar o usuário no backend
+      const createResponse = await api.post('/api/user/user-register', {
+        name: user.displayName || email.split('@')[0],
+        email: user.email,
+      });
+      backendUser = createResponse.data.user;
+    }
+    
+    // Salvar dados localmente com o ID do backend
     const userData = {
-      id: user.uid,
-      name: user.displayName || email.split('@')[0],
+      id: backendUser.id, // ID do banco de dados (number)
+      firebaseUid: user.uid, // UID do Firebase (string)
+      name: user.displayName || backendUser.name || email.split('@')[0],
       email: user.email,
       photoURL: user.photoURL,
     };
@@ -84,15 +99,16 @@ export async function register({ name, email, password }) {
     
     const token = await user.getIdToken();
     
-    // Criar usuário no backend
-    await api.post('/user-register', {
+    // Criar usuário no backend e pegar o ID do banco
+    const backendResponse = await api.post('/api/user/user-register', {
       name,
       email,
     });
     
-    // Salvar dados localmente
+    // Salvar dados localmente com o ID do backend
     const userData = {
-      id: user.uid,
+      id: backendResponse.data.user.id, // ID do banco de dados (number)
+      firebaseUid: user.uid, // UID do Firebase (string)
       name: name,
       email: user.email,
       photoURL: user.photoURL,
@@ -118,15 +134,16 @@ export async function loginWithGoogle() {
     const user = result.user;
     const token = await user.getIdToken();
     
-    // Criar/atualizar usuário no backend
-    await api.post('/user-register-by-google', {
+    // Criar/atualizar usuário no backend e pegar o ID do banco
+    const backendResponse = await api.post('/api/user/user-register-by-google', {
       name: user.displayName,
       email: user.email,
     });
     
-    // Salvar dados localmente
+    // Salvar dados localmente com o ID do backend
     const userData = {
-      id: user.uid,
+      id: backendResponse.data.user.id, // ID do banco de dados (number)
+      firebaseUid: user.uid, // UID do Firebase (string)
       name: user.displayName,
       email: user.email,
       photoURL: user.photoURL,
@@ -183,12 +200,44 @@ export function onAuthChange(callback) {
   return onAuthStateChanged(auth, async (user) => {
     if (user) {
       const token = await user.getIdToken();
+      
+      // Verificar se já temos o ID do backend no localStorage
+      const existingAuth = getAuth();
+      if (existingAuth?.user?.id && typeof existingAuth.user.id === 'number') {
+        // Já temos o ID do banco, usar o existente
+        callback(existingAuth.user);
+        return;
+      }
+      
+      // Buscar ou criar usuário no backend para pegar o ID
+      let backendUser = null;
+      try {
+        const response = await api.get(`/api/user/user-by-email/${encodeURIComponent(user.email)}`);
+        backendUser = response.data.user;
+      } catch (error) {
+        // Se não encontrar, criar o usuário no backend
+        try {
+          const createResponse = await api.post('/api/user/user-register', {
+            name: user.displayName || user.email?.split('@')[0],
+            email: user.email,
+          });
+          backendUser = createResponse.data.user;
+        } catch (createError) {
+          console.error('Erro ao criar usuário no backend:', createError);
+          clearAuth();
+          callback(null);
+          return;
+        }
+      }
+      
       const userData = {
-        id: user.uid,
-        name: user.displayName || user.email?.split('@')[0],
+        id: backendUser.id, // ID do banco de dados (number)
+        firebaseUid: user.uid, // UID do Firebase (string)
+        name: user.displayName || backendUser.name || user.email?.split('@')[0],
         email: user.email,
         photoURL: user.photoURL,
       };
+      
       setAuth({ 
         token, 
         user: userData, 

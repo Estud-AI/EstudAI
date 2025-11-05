@@ -3,7 +3,7 @@ import { getToken, refresh, logout } from '../auth/auth';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001',
-  timeout: 15000,
+  timeout: 60000, // 60 segundos para requisições de IA
 });
 
 api.interceptors.request.use((config) => {

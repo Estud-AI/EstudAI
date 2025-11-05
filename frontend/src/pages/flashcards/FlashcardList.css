@@ -80,6 +80,7 @@
   border-radius: 0.75rem;
   padding: 1.5rem;
   display: flex;
+  color: black;
   flex-direction: column;
   justify-content: space-between;
   box-shadow: var(--shadow-md);

@@ -1,82 +1,90 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../api/api';
+import { toast } from 'react-toastify';
+import { getUserSubjects } from '../../services/subjects';
+import { getAuth } from '../../auth/auth';
 import './SubjectsList.css';
 
 export default function SubjectsList() {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Mock data for demonstration
-  const mockSubjects = [
-    { 
-      id: 1, 
-      name: 'Matemática', 
-      progress: 75,
-      topics: 12,
-      flashcards: 45,
-      quizzes: 8,
-      color: 'blue'
-    },
-    { 
-      id: 2, 
-      name: 'Português', 
-      progress: 60,
-      topics: 15,
-      flashcards: 38,
-      quizzes: 6,
-      color: 'green'
-    },
-    { 
-      id: 3, 
-      name: 'História', 
-      progress: 45,
-      topics: 20,
-      flashcards: 52,
-      quizzes: 10,
-      color: 'purple'
-    },
-    { 
-      id: 4, 
-      name: 'Biologia', 
-      progress: 85,
-      topics: 18,
-      flashcards: 61,
-      quizzes: 12,
-      color: 'orange'
-    },
-    { 
-      id: 5, 
-      name: 'Física', 
-      progress: 30,
-      topics: 14,
-      flashcards: 29,
-      quizzes: 5,
-      color: 'red'
-    },
-    { 
-      id: 6, 
-      name: 'Química', 
-      progress: 55,
-      topics: 16,
-      flashcards: 42,
-      quizzes: 7,
-      color: 'teal'
-    }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setSubjects(mockSubjects);
-      setLoading(false);
-    }, 500);
+    loadSubjects();
   }, []);
+
+  async function loadSubjects() {
+    try {
+      const auth = getAuth();
+      if (!auth || !auth.user) {
+        toast.error('Você precisa estar logado');
+        setLoading(false);
+        return;
+      }
+
+      const userId = parseInt(auth.user.id) || 1;
+      const data = await getUserSubjects(userId);
+      
+      // Mapear dados do backend para o formato esperado
+      const mappedSubjects = (data || []).map(subject => ({
+        id: subject.id,
+        name: subject.name,
+        progress: subject.progress || 0,
+        topics: subject._count?.summaries || 0,
+        flashcards: subject._count?.flashcards || 0,
+        quizzes: subject._count?.tests || 0,
+        color: getRandomColor(subject.id)
+      }));
+
+      setSubjects(mappedSubjects);
+    } catch (error) {
+      console.error('Erro ao carregar matérias:', error);
+      toast.error(error.message || 'Erro ao carregar matérias');
+      setSubjects([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function getRandomColor(id) {
+    const colors = ['blue', 'green', 'purple', 'orange', 'red', 'teal'];
+    return colors[id % colors.length];
+  }
 
   if (loading) {
     return (
       <div className="subjects-container">
-        <div className="loading">Carregando matérias...</div>
+        <div className="loading">
+          <svg className="spinner-large" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" opacity="0.25" />
+            <path d="M12 2 A10 10 0 0 1 22 12" opacity="0.75" />
+          </svg>
+          Carregando matérias...
+        </div>
+      </div>
+    );
+  }
+
+  if (subjects.length === 0) {
+    return (
+      <div className="subjects-container">
+        <div className="subjects-header">
+          <h1 className="subjects-title">Minhas Matérias</h1>
+        </div>
+        <div className="empty-state">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.3">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
+          <h3>Nenhuma matéria ainda</h3>
+          <p>Crie sua primeira matéria na página inicial para começar a estudar</p>
+          <Link to="/home" className="button-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Criar Matéria
+          </Link>
+        </div>
       </div>
     );
   }

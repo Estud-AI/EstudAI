@@ -1,13 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/sidebar.css';
 import icon from '../assets/logo/icon_estudai.png';
+import { getUserSubjects } from '../services/subjects';
+import { getAuth } from '../auth/auth';
 
 export default function Sidebar() {
   const location = useLocation();
+  const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   const isActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
+  useEffect(() => {
+    loadSubjects();
+  }, []);
+
+  const loadSubjects = async () => {
+    try {
+      const auth = getAuth();
+      if (!auth?.user?.id) return;
+      
+      const data = await getUserSubjects(auth.user.id);
+      setSubjects(data.slice(0, 5)); // Máximo 5 matérias no sidebar
+    } catch (error) {
+      console.error('Erro ao carregar matérias:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,53 +50,45 @@ export default function Sidebar() {
           </svg>
           <span>Início</span>
         </Link>
-        
-        <Link 
-          to="/subjects" 
-          className={`sidebar-link ${isActive('/subjects') ? 'active' : ''}`}
-        >
-          <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-          </svg>
-          <span>Matérias</span>
-        </Link>
-        
-        <Link 
-          to="/flashcards" 
-          className={`sidebar-link ${isActive('/flashcards') ? 'active' : ''}`}
-        >
-          <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-            <path d="M16 3h2a2 2 0 0 1 2 2v2" />
-          </svg>
-          <span>Flashcards</span>
-        </Link>
-        
-        <Link 
-          to="/quizzes" 
-          className={`sidebar-link ${isActive('/quizzes') ? 'active' : ''}`}
-        >
-          <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 11l3 3L22 4" />
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-          </svg>
-          <span>Quizzes</span>
-        </Link>
-        
-        <Link 
-          to="/summaries" 
-          className={`sidebar-link ${isActive('/summaries') ? 'active' : ''}`}
-        >
-          <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-            <polyline points="10 9 9 9 8 9" />
-          </svg>
-          <span>Resumos</span>
-        </Link>
+
+        <div className="sidebar-section">
+          <div className="sidebar-section-title">
+            <span>Minhas Matérias</span>
+          </div>
+          
+          {loading ? (
+            <div className="sidebar-loading">Carregando...</div>
+          ) : subjects.length > 0 ? (
+            <>
+              {subjects.map((subject) => (
+                <Link
+                  key={subject.id}
+                  to={`/subjects/${subject.id}`}
+                  className={`sidebar-link sidebar-subject ${isActive(`/subjects/${subject.id}`) ? 'active' : ''}`}
+                >
+                  <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                  </svg>
+                  <span>{subject.name}</span>
+                </Link>
+              ))}
+              <Link 
+                to="/subjects" 
+                className="sidebar-link sidebar-view-all"
+              >
+                <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span>Ver todas</span>
+              </Link>
+            </>
+          ) : (
+            <div className="sidebar-empty">
+              <p>Nenhuma matéria ainda</p>
+            </div>
+          )}
+        </div>
       </nav>
       
       <div className="sidebar-footer">

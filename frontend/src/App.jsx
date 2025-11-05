@@ -7,6 +7,9 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import SubjectsList from './pages/subjects/SubjectsList';
 import SubjectDetail from './pages/subjects/SubjectDetail';
+import SubjectSummaries from './pages/subjects/SubjectSummaries';
+import SubjectFlashcards from './pages/subjects/SubjectFlashcards';
+import SubjectTests from './pages/subjects/SubjectTests';
 import FlashcardList from './pages/flashcards/FlashcardList';
 import SummaryList from './pages/summaries/SummaryList';
 import SummaryDetail from './pages/summaries/SummaryDetail';
@@ -77,6 +80,9 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/subjects" element={<SubjectsList />} />
           <Route path="/subjects/:id" element={<SubjectDetail />} />
+          <Route path="/subjects/:id/summaries" element={<SubjectSummaries />} />
+          <Route path="/subjects/:id/flashcards" element={<SubjectFlashcards />} />
+          <Route path="/subjects/:id/tests" element={<SubjectTests />} />
           <Route path="/flashcards" element={<FlashcardList />} />
           <Route path="/summaries" element={<SummaryList />} />
           <Route path="/summaries/:id" element={<SummaryDetail />} />
