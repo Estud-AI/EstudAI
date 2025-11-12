@@ -34,7 +34,8 @@ specs.servers = [
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Aumentar limite para aceitar imagens em base64
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
