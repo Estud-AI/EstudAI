@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createSubject } from '../services/subjects';
 import { getAuth } from '../auth/auth';
+import { useSubjects } from '../contexts/SubjectsContext';
 import '../styles/home.css';
 
 export default function Home() {
   const [materia, setMateria] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const navigate = useNavigate();
+  const { refreshSubjects } = useSubjects();
   const features = [
     {
       icon: (
@@ -154,6 +156,9 @@ export default function Home() {
       
       toast.dismiss('creating');
       toast.success(`✅ Matéria "${result.data.subjectName}" criada com sucesso!`);
+      
+      // Notificar o contexto para atualizar a sidebar
+      refreshSubjects();
       
       // Redirecionar para a matéria criada
       navigate(`/subjects/${result.data.subjectId}`);

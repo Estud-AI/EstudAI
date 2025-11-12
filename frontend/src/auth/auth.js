@@ -34,6 +34,16 @@ export function getToken() {
   return auth?.token ?? null;
 }
 
+export function getUserId() {
+  const auth = getAuth();
+  return auth?.user?.id ?? null;
+}
+
+export function getUser() {
+  const auth = getAuth();
+  return auth?.user ?? null;
+}
+
 export function isAuthenticated() {
   const authData = getAuth();
   if (!authData?.token) return false;

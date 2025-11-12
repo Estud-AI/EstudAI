@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSubjectById } from '../../services/subjects';
+import { createFlashcards } from '../../services/ai';
+import { getUserId } from '../../auth/auth';
+import { updateStreak } from '../../services/streak';
 import './SubjectFlashcards.css';
 
 export default function SubjectFlashcards() {
@@ -8,9 +11,11 @@ export default function SubjectFlashcards() {
   const navigate = useNavigate();
   const [subject, setSubject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [filter, setFilter] = useState('ALL'); // ALL, EASY, MEDIUM, HARD
+  const [readCount, setReadCount] = useState(0); // Contador de flashcards lidos
 
   useEffect(() => {
     loadSubject();
@@ -25,6 +30,21 @@ export default function SubjectFlashcards() {
       console.error('Erro ao carregar matéria:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateFlashcards = async () => {
+    try {
+      setCreating(true);
+      await createFlashcards(Number(id));
+      await loadSubject(); // Recarregar matéria
+      setCurrentIndex(0);
+      setIsFlipped(false);
+    } catch (error) {
+      console.error('Erro ao criar flashcards:', error);
+      alert('Erro ao gerar flashcards. Tente novamente.');
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -47,8 +67,26 @@ export default function SubjectFlashcards() {
     setCurrentIndex((prev) => (prev - 1 + flashcards.length) % flashcards.length);
   };
 
-  const handleFlip = () => {
+  const handleFlip = async () => {
+    const wasNotFlipped = !isFlipped;
     setIsFlipped(!isFlipped);
+    
+    // Se está virando o card (não estava virado antes), incrementa o contador
+    if (wasNotFlipped) {
+      const newCount = readCount + 1;
+      setReadCount(newCount);
+      
+      // Atualizar streak após ler 5 flashcards
+      if (newCount === 5) {
+        try {
+          const userId = getUserId();
+          await updateStreak(userId);
+          console.log('Streak atualizado após ler 5 flashcards!');
+        } catch (error) {
+          console.error('Erro ao atualizar streak:', error);
+        }
+      }
+    }
   };
 
   const getLevelColor = (level) => {
@@ -96,6 +134,25 @@ export default function SubjectFlashcards() {
           </svg>
           <h2>Nenhum flashcard encontrado</h2>
           <p>Esta matéria ainda não possui flashcards gerados.</p>
+          <button 
+            onClick={handleCreateFlashcards} 
+            className="btn-create"
+            disabled={creating}
+          >
+            {creating ? (
+              <>
+                <div className="btn-spinner"></div>
+                Gerando flashcards...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Gerar Flashcards
+              </>
+            )}
+          </button>
         </div>
       </div>
     );
@@ -114,6 +171,25 @@ export default function SubjectFlashcards() {
           <h1 className="page-title">Flashcards - {subject.name}</h1>
           <p className="page-subtitle">{flashcards.length} flashcard{flashcards.length !== 1 ? 's' : ''} disponível{flashcards.length !== 1 ? 'eis' : ''}</p>
         </div>
+        <button 
+          onClick={handleCreateFlashcards} 
+          className="btn-create-header"
+          disabled={creating}
+        >
+          {creating ? (
+            <>
+              <div className="btn-spinner"></div>
+              Gerando...
+            </>
+          ) : (
+            <>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Gerar Mais
+            </>
+          )}
+        </button>
       </div>
 
       {/* Filtros */}

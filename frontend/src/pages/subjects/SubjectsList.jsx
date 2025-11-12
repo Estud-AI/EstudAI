@@ -3,15 +3,17 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getUserSubjects } from '../../services/subjects';
 import { getAuth } from '../../auth/auth';
+import { useSubjects } from '../../contexts/SubjectsContext';
 import './SubjectsList.css';
 
 export default function SubjectsList() {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { shouldRefresh } = useSubjects();
 
   useEffect(() => {
     loadSubjects();
-  }, []);
+  }, [shouldRefresh]); // Recarrega quando shouldRefresh muda
 
   async function loadSubjects() {
     try {

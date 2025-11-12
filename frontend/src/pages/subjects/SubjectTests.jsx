@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSubjectById } from '../../services/subjects';
+import { createTest } from '../../services/ai';
+import { getUserId } from '../../auth/auth';
+import { updateStreak } from '../../services/streak';
 import './SubjectTests.css';
 
 export default function SubjectTests() {
@@ -8,6 +11,7 @@ export default function SubjectTests() {
   const navigate = useNavigate();
   const [subject, setSubject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
   const [answers, setAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
@@ -34,6 +38,20 @@ export default function SubjectTests() {
     }
   };
 
+  const handleCreateTest = async () => {
+    try {
+      setCreating(true);
+      const userId = getUserId();
+      await createTest(userId, Number(id));
+      await loadSubject(); // Recarregar matéria
+    } catch (error) {
+      console.error('Erro ao criar simulado:', error);
+      alert('Erro ao gerar simulado. Tente novamente.');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const handleSelectTest = (test) => {
     setSelectedTest(test);
     setAnswers({});
@@ -45,7 +63,7 @@ export default function SubjectTests() {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedTest?.questions) return;
     
     let correctCount = 0;
@@ -57,6 +75,15 @@ export default function SubjectTests() {
     
     setScore(correctCount);
     setShowResults(true);
+    
+    // Atualizar streak após completar um simulado
+    try {
+      const userId = getUserId();
+      await updateStreak(userId);
+      console.log('Streak atualizado após completar simulado!');
+    } catch (error) {
+      console.error('Erro ao atualizar streak:', error);
+    }
   };
 
   const handleReset = () => {
@@ -101,6 +128,25 @@ export default function SubjectTests() {
           </svg>
           <h2>Nenhum simulado encontrado</h2>
           <p>Esta matéria ainda não possui simulados gerados.</p>
+          <button 
+            onClick={handleCreateTest} 
+            className="btn-create"
+            disabled={creating}
+          >
+            {creating ? (
+              <>
+                <div className="btn-spinner"></div>
+                Gerando simulado...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Gerar Simulado
+              </>
+            )}
+          </button>
         </div>
       </div>
     );
@@ -123,6 +169,25 @@ export default function SubjectTests() {
           <h1 className="page-title">Simulados - {subject.name}</h1>
           <p className="page-subtitle">{subject.tests.length} simulado{subject.tests.length !== 1 ? 's' : ''} disponível{subject.tests.length !== 1 ? 'eis' : ''}</p>
         </div>
+        <button 
+          onClick={handleCreateTest} 
+          className="btn-create-header"
+          disabled={creating}
+        >
+          {creating ? (
+            <>
+              <div className="btn-spinner"></div>
+              Gerando...
+            </>
+          ) : (
+            <>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Gerar Novo
+            </>
+          )}
+        </button>
       </div>
 
       <div className={`tests-layout ${subject.tests.length > 1 ? 'with-sidebar' : ''}`}>

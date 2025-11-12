@@ -26,10 +26,6 @@ components:
           type: string
           format: email
           example: "john@example.com"
-        photoURL:
-          type: string
-          nullable: true
-          example: "https://example.com/photo.jpg"
         phoneNumber:
           type: string
           nullable: true
@@ -482,10 +478,6 @@ paths:
                   type: string
                   format: email
                   example: "john@example.com"
-                photoURL:
-                  type: string
-                  nullable: true
-                  example: "https://example.com/photo.jpg"
                 phoneNumber:
                   type: string
                   nullable: true
@@ -505,6 +497,144 @@ paths:
                     $ref: '#/components/schemas/User'
         '400':
           description: Bad request - missing or invalid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/user/profile/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user profile with statistics
+      description: Retrieves complete user profile information including study statistics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: User's ID
+          example: 1
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  profile:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        format: email
+                        example: "john@example.com"
+                      phoneNumber:
+                        type: string
+                        nullable: true
+                        example: "+5511999999999"
+                      dayStreak:
+                        type: integer
+                        example: 5
+                      joinedDate:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T00:00:00.000Z"
+                      stats:
+                        type: object
+                        properties:
+                          subjects:
+                            type: integer
+                            example: 6
+                          flashcards:
+                            type: integer
+                            example: 267
+                          quizzesCompleted:
+                            type: integer
+                            example: 24
+                          studyHours:
+                            type: integer
+                            example: 145
+        '400':
+          description: Bad request - invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Users
+      summary: Update user profile
+      description: Updates user profile information (name and phone number)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: User's ID
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "John Doe Updated"
+                phoneNumber:
+                  type: string
+                  nullable: true
+                  example: "+5511999999999"
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request - invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
           content:
             application/json:
               schema:

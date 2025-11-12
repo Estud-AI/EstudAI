@@ -15,6 +15,7 @@ const flashcardRouter = require("./routes/flashcard").default;
 const subjectsRouter = require("./routes/subjects").default;
 const summaryRouter = require("./routes/summary").default;
 const testRouter = require("./routes/test").default;
+const streakRouter = require("./routes/strick").default;
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -34,7 +35,8 @@ specs.servers = [
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Aumentar limite para aceitar imagens em base64
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
@@ -46,6 +48,7 @@ app.use("/api/flashcard", flashcardRouter);
 app.use("/api/subjects", subjectsRouter);
 app.use("/api/summary", summaryRouter);
 app.use("/api/test", testRouter);
+app.use("/api/streak", streakRouter);
 
 // Start server
 app.listen(PORT, () => {
