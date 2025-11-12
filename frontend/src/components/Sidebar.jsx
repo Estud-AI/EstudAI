@@ -4,11 +4,13 @@ import '../styles/sidebar.css';
 import icon from '../assets/logo/icon_estudai.png';
 import { getUserSubjects } from '../services/subjects';
 import { getAuth } from '../auth/auth';
+import { useSubjects } from '../contexts/SubjectsContext';
 
 export default function Sidebar() {
   const location = useLocation();
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { shouldRefresh } = useSubjects();
   
   const isActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
@@ -16,7 +18,7 @@ export default function Sidebar() {
 
   useEffect(() => {
     loadSubjects();
-  }, []);
+  }, [shouldRefresh]); // Recarrega quando shouldRefresh muda
 
   const loadSubjects = async () => {
     try {
