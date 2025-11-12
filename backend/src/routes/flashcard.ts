@@ -7,7 +7,7 @@ const prisma = require("../lib/prisma").default;
 
 const router = express.Router();
 
-router.get("/:subjectId", async (req: Request, res: Response) => {
+router.post("/:subjectId", async (req: Request, res: Response) => {
   try {
     const subjectId = Number(req.params.subjectId);
 

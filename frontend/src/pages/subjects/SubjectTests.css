@@ -9,6 +9,13 @@
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.tests-header > div {
+  flex: 1;
+  min-width: 250px;
 }
 
 .btn-back {
@@ -16,10 +23,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--accent-primary);
-  border: 2px solid var(--accent-primary);
+  background: transparent;
+  border: 1px solid var(--border-light);
   border-radius: 10px;
-  color: white;
+  color: var(--text-dark);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -27,10 +34,8 @@
 }
 
 .btn-back:hover {
-  background: #6366f1;
-  border-color: #6366f1;
-  transform: translateX(-4px);
-  box-shadow: var(--shadow-md);
+  background: transparent;
+  border-color: var(--text-dark);
 }
 
 .page-title {
@@ -42,7 +47,7 @@
 
 .page-subtitle {
   font-size: 1rem;
-  color: var(--text-secondary);
+  color: var(--text-dark);
   margin: 0.5rem 0 0 0;
 }
 
@@ -135,7 +140,7 @@
 
 .test-item-info {
   font-size: 0.75rem;
-  color: var(--text-tertiary);
+  color: black
 }
 
 .test-content {
@@ -427,6 +432,60 @@
 .correct-answer {
   background: #dcfce7;
   border: 2px solid #22c55e;
+}
+
+/* Botões de criação */
+.btn-create,
+.btn-create-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.75rem;
+  background: var(--accent-primary);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-create:hover:not(:disabled),
+.btn-create-header:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-create:disabled,
+.btn-create-header:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-create {
+  margin-top: 1.5rem;
+  padding: 1rem 2rem;
+  font-size: 1.0625rem;
+}
+
+.btn-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin-btn 0.8s linear infinite;
+}
+
+@keyframes spin-btn {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsivo */

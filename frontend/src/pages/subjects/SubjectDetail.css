@@ -216,10 +216,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: white;
-  border: 2px solid var(--accent-primary);
+  background: transparent;
+  border: 1px solid var(--border-light);
   border-radius: 10px;
-  color: var(--accent-primary);
+  color: var(--text-dark);
   text-decoration: none;
   font-size: 0.9375rem;
   font-weight: 600;
@@ -229,11 +229,8 @@
 }
 
 .back-link:hover {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: white;
-  transform: translateX(-4px);
-  box-shadow: var(--shadow-md);
+  background: transparent;
+  border-color: var(--text-dark);
 }
 
 .subject-detail-header {

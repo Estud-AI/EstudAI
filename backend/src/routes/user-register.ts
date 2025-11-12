@@ -133,10 +133,6 @@ router.get("/profile/:id", async (req: Request, res: Response) => {
       return acc + subject.tests.reduce((testAcc, test) => testAcc + test.attemps, 0);
     }, 0);
 
-    // Calcular horas de estudo (estimativa baseada em número de flashcards e quizzes)
-    // Assumindo: 2 minutos por flashcard, 10 minutos por quiz
-    const studyHours = Math.round((totalFlashcards * 2 + quizzesCompleted * 10) / 60);
-
     const profile = {
       name: user.name,
       email: user.email,
@@ -147,7 +143,6 @@ router.get("/profile/:id", async (req: Request, res: Response) => {
         subjects: totalSubjects,
         flashcards: totalFlashcards,
         quizzesCompleted: quizzesCompleted,
-        studyHours: studyHours
       }
     };
 

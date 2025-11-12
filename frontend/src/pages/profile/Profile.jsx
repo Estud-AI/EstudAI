@@ -258,13 +258,12 @@ export default function Profile() {
             <div className="stat-card orange">
               <div className="stat-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                 </svg>
               </div>
               <div className="stat-info">
-                <div className="stat-value">{user.stats.studyHours || 0}</div>
-                <div className="stat-label">Horas de Estudo</div>
+                <div className="stat-value">{user.dayStreak || 0}</div>
+                <div className="stat-label">Dias de Ofensiva</div>
               </div>
             </div>
           </div>

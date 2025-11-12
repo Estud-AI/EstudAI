@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getSubjectById } from '../../services/subjects';
+import { createSummary } from '../../services/ai';
+import { getUserId } from '../../auth/auth';
 import './SubjectSummaries.css';
 
 export default function SubjectSummaries() {
@@ -8,6 +10,7 @@ export default function SubjectSummaries() {
   const navigate = useNavigate();
   const [subject, setSubject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
   const [selectedSummary, setSelectedSummary] = useState(null);
 
   useEffect(() => {
@@ -28,6 +31,20 @@ export default function SubjectSummaries() {
       console.error('Erro ao carregar matéria:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateSummary = async () => {
+    try {
+      setCreating(true);
+      const userId = getUserId();
+      await createSummary(userId, Number(id));
+      await loadSubject(); // Recarregar matéria
+    } catch (error) {
+      console.error('Erro ao criar resumo:', error);
+      alert('Erro ao gerar resumo. Tente novamente.');
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -76,6 +93,25 @@ export default function SubjectSummaries() {
           </svg>
           <h2>Nenhum resumo encontrado</h2>
           <p>Esta matéria ainda não possui resumos gerados.</p>
+          <button 
+            onClick={handleCreateSummary} 
+            className="btn-create"
+            disabled={creating}
+          >
+            {creating ? (
+              <>
+                <div className="btn-spinner"></div>
+                Gerando resumo...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Gerar Resumo
+              </>
+            )}
+          </button>
         </div>
       </div>
     );
@@ -96,6 +132,25 @@ export default function SubjectSummaries() {
           <h1 className="page-title">Resumos - {subject.name}</h1>
           <p className="page-subtitle">{subject.summaries.length} resumo{subject.summaries.length !== 1 ? 's' : ''} disponível{subject.summaries.length !== 1 ? 'eis' : ''}</p>
         </div>
+        <button 
+          onClick={handleCreateSummary} 
+          className="btn-create-header"
+          disabled={creating}
+        >
+          {creating ? (
+            <>
+              <div className="btn-spinner"></div>
+              Gerando...
+            </>
+          ) : (
+            <>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Gerar Novo
+            </>
+          )}
+        </button>
       </div>
 
       <div className={`summaries-layout ${subject.summaries.length > 1 ? 'with-sidebar' : ''}`}>
