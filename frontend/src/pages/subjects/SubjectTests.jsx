@@ -167,9 +167,9 @@ export default function SubjectTests() {
   const canSubmit = answeredCount === totalQuestions && totalQuestions > 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 gap-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
         <button 
           onClick={() => navigate(`/subjects/${id}`)} 
           className="inline-flex items-center gap-2 px-4 py-2 text-gray-600 bg-white border border-gray-300 rounded-lg font-medium transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900"
@@ -179,29 +179,30 @@ export default function SubjectTests() {
           </svg>
           Voltar
         </button>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Simulados - {subject.name}</h1>
-          <p className="text-gray-600">{subject.tests.length} simulado{subject.tests.length !== 1 ? 's' : ''} disponível{subject.tests.length !== 1 ? 'eis' : ''}</p>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1 truncate">Simulados - {subject.name}</h1>
+          <p className="text-sm md:text-base text-gray-600">{subject.tests.length} simulado{subject.tests.length !== 1 ? 's' : ''} disponível{subject.tests.length !== 1 ? 'eis' : ''}</p>
         </div>
         <button 
           onClick={handleCreateTest} 
-          className="inline-flex items-center gap-2.5 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap"
+          className="inline-flex items-center gap-2.5 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none whitespace-nowrap text-sm md:text-base w-full sm:w-auto justify-center"
           disabled={creating}
         >
           {creating ? (
             <>
-              <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="animate-spin shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" opacity="0.25" />
                 <path d="M12 2 A10 10 0 0 1 22 12" opacity="0.75" />
               </svg>
-              Gerando...
+              <span className="hidden sm:inline">Gerando...</span>
             </>
           ) : (
             <>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
-              Gerar Novo
+              <span className="hidden sm:inline">Gerar Novo</span>
+              <span className="sm:hidden">Novo</span>
             </>
           )}
         </button>
