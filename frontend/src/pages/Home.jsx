@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { createSubject } from '../services/subjects';
 import { getAuth } from '../auth/auth';
 import { useSubjects } from '../contexts/SubjectsContext';
-import '../styles/home.css';
 
 export default function Home() {
   const [materia, setMateria] = useState('');
@@ -47,82 +46,105 @@ export default function Home() {
   ];
 
   return (
-    <div className="home-container">
-      <div className="home-header">
-        <h1 className="home-title">Bem-vindo ao EstudAI!</h1>
-        <p className="home-subtitle">
-          Sua plataforma de estudos com Inteligência Artificial
-        </p>
-      </div>
-
-      <div className="home-search">
-        <div className="search-card">
-          <h3>Criar Nova Matéria</h3>
-          <p className="search-description">
-            Digite o tema que você deseja estudar e nossa IA irá criar automaticamente todo o conteúdo necessário para seus estudos.
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 -m-8 p-8">
+      <div className="max-w-7xl mx-auto px-8 py-16">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 mb-4">
+            Bem-vindo ao EstudAI!
+          </h1>
+          <p className="text-xl text-gray-600 font-medium">
+            Sua plataforma de estudos com Inteligência Artificial
           </p>
-          <form onSubmit={handleCreateSubject} className="search-form">
-            <div className="search-input-wrapper">
-              <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-              </svg>
-              <input 
-                type="text" 
-                className="search-input" 
-                placeholder="Ex: Revolução Francesa, Álgebra Linear, Fotossíntese..."
-                value={materia}
-                onChange={(e) => setMateria(e.target.value)}
-                disabled={isCreating}
-                required
-              />
+        </div>
+
+        {/* Search Card */}
+        <div className="max-w-3xl mx-auto mb-20">
+          <div className="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100">
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">Criar Nova Matéria</h3>
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              Digite o tema que você deseja estudar e nossa IA irá criar automaticamente todo o conteúdo necessário para seus estudos.
+            </p>
+            <form onSubmit={handleCreateSubject} className="space-y-6">
+              <div className="relative">
+                <svg 
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2"
+                >
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+                <input 
+                  type="text" 
+                  className="w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 disabled:bg-gray-50 disabled:text-gray-500" 
+                  placeholder="Ex: Revolução Francesa, Álgebra Linear, Fotossíntese..."
+                  value={materia}
+                  onChange={(e) => setMateria(e.target.value)}
+                  disabled={isCreating}
+                  required
+                />
+              </div>
+              <button 
+                type="submit" 
+                className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold text-lg transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                disabled={isCreating || !materia.trim()}
+              >
+                {isCreating ? (
+                  <>
+                    <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10" opacity="0.25" />
+                      <path d="M12 2 A10 10 0 0 1 22 12" opacity="0.75" />
+                    </svg>
+                    Gerando conteúdo...
+                  </>
+                ) : (
+                  <>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Criar Matéria
+                  </>
+                )}
+              </button>
+            </form>
+            
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <Link 
+                to="/subjects" 
+                className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3 bg-white text-blue-600 border-2 border-blue-200 rounded-xl font-semibold transition-all duration-200 hover:bg-blue-50 hover:border-blue-400"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+                Ver Minhas Matérias
+              </Link>
             </div>
-            <button 
-              type="submit" 
-              className="create-button"
-              disabled={isCreating || !materia.trim()}
-            >
-              {isCreating ? (
-                <>
-                  <svg className="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" opacity="0.25" />
-                    <path d="M12 2 A10 10 0 0 1 22 12" opacity="0.75" />
-                  </svg>
-                  Gerando conteúdo...
-                </>
-              ) : (
-                <>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
-                  Criar Matéria
-                </>
-              )}
-            </button>
-          </form>
-          
-          <div className="home-actions-section">
-            <Link to="/subjects" className="view-subjects-button">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-              </svg>
-              Ver Minhas Matérias
-            </Link>
           </div>
         </div>
-      </div>
 
-      <div className="how-it-works">
-        <h1 className="section-title">Como Funciona?</h1>
-        <p className="section-subtitle">O EstudAI utiliza Inteligência Artificial para criar conteúdo personalizado de estudo</p>
+        {/* How It Works Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">Como Funciona?</h1>
+          <p className="text-lg text-gray-600">O EstudAI utiliza Inteligência Artificial para criar conteúdo personalizado de estudo</p>
+        </div>
         
-        <div className="features-grid">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {features.map((feature, index) => (
-            <div key={index} className="feature-card">
-              <div className="feature-icon">{feature.icon}</div>
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
+            <div 
+              key={index} 
+              className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:border-gray-200"
+            >
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white mb-6 shadow-md">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
             </div>
           ))}
         </div>

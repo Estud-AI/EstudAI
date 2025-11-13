@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import '../styles/sidebar.css';
 import icon from '../assets/logo/icon_estudai.png';
-import { getUserSubjects } from '../services/subjects';
+import { getUserSubjects, deleteSubject } from '../services/subjects';
 import { getAuth } from '../auth/auth';
 import { useSubjects } from '../contexts/SubjectsContext';
+import ConfirmDialog from './ConfirmDialog';
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [subjectToDelete, setSubjectToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { shouldRefresh } = useSubjects();
   
   const isActive = (path) => {
@@ -32,6 +38,44 @@ export default function Sidebar() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteClick = (e, subject) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSubjectToDelete(subject);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!subjectToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteSubject(subjectToDelete.id);
+      toast.success('Matéria deletada com sucesso!');
+      
+      // Atualizar a lista removendo a matéria deletada
+      setSubjects(prev => prev.filter(s => s.id !== subjectToDelete.id));
+      
+      // Se estiver na página da matéria deletada, redirecionar
+      if (location.pathname.includes(`/subjects/${subjectToDelete.id}`)) {
+        navigate('/subjects');
+      }
+      
+      setDeleteDialogOpen(false);
+      setSubjectToDelete(null);
+    } catch (error) {
+      console.error('Erro ao deletar matéria:', error);
+      toast.error(error.message || 'Erro ao deletar matéria');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setSubjectToDelete(null);
   };
 
   return (
@@ -63,17 +107,28 @@ export default function Sidebar() {
           ) : subjects.length > 0 ? (
             <>
               {subjects.map((subject) => (
-                <Link
-                  key={subject.id}
-                  to={`/subjects/${subject.id}`}
-                  className={`sidebar-link sidebar-subject ${isActive(`/subjects/${subject.id}`) ? 'active' : ''}`}
-                >
-                  <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                  </svg>
-                  <span>{subject.name}</span>
-                </Link>
+                <div key={subject.id} className="sidebar-subject-item">
+                  <Link
+                    to={`/subjects/${subject.id}`}
+                    className={`sidebar-link sidebar-subject ${isActive(`/subjects/${subject.id}`) ? 'active' : ''}`}
+                  >
+                    <svg className="sidebar-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg>
+                    <span>{subject.name}</span>
+                  </Link>
+                  <button
+                    className="sidebar-delete-btn"
+                    onClick={(e) => handleDeleteClick(e, subject)}
+                    title="Deletar matéria"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                  </button>
+                </div>
               ))}
               <Link 
                 to="/subjects" 
@@ -102,6 +157,17 @@ export default function Sidebar() {
           <span>Perfil</span>
         </Link>
       </div>
+
+      <ConfirmDialog
+        isOpen={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Deletar Matéria"
+        message={`Tem certeza que deseja deletar a matéria "${subjectToDelete?.name}"?\n\nEsta ação não pode ser desfeita e todos os resumos, flashcards e simulados serão deletados.`}
+        confirmText="Deletar"
+        cancelText="Cancelar"
+        isLoading={isDeleting}
+      />
     </aside>
   );
 }

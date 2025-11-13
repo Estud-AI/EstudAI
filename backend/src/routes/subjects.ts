@@ -257,4 +257,73 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
+// Endpoint para deletar uma matéria
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const subjectId = parseInt(req.params.id);
+
+    if (!subjectId) {
+      return res.status(400).json({ error: "ID da matéria inválido." });
+    }
+
+    // Verificar se a matéria existe
+    const subject = await prisma.subject.findUnique({
+      where: { id: subjectId }
+    });
+
+    if (!subject) {
+      return res.status(404).json({ error: "Matéria não encontrada." });
+    }
+
+    // Deletar em uma transação para garantir consistência
+    await prisma.$transaction(async (tx: any) => {
+      // 1. Buscar todos os testes da matéria para deletar suas questões
+      const tests = await tx.test.findMany({
+        where: { subjectId },
+        select: { id: true }
+      });
+
+      // 2. Deletar todas as questões dos testes
+      for (const test of tests) {
+        await tx.questions.deleteMany({
+          where: { testId: test.id }
+        });
+      }
+
+      // 3. Deletar todos os testes
+      await tx.test.deleteMany({
+        where: { subjectId }
+      });
+
+      // 4. Deletar todos os flashcards
+      await tx.flashcard.deleteMany({
+        where: { subjectId }
+      });
+
+      // 5. Deletar todos os resumos
+      await tx.summary.deleteMany({
+        where: { subjectId }
+      });
+
+      // 6. Finalmente, deletar a matéria
+      await tx.subject.delete({
+        where: { id: subjectId }
+      });
+    });
+
+    return res.json({
+      ok: true,
+      message: "Matéria deletada com sucesso."
+    });
+
+  } catch (err: any) {
+    console.error("Delete subject error:", err?.message || err);
+    return res.status(500).json({
+      ok: false,
+      error: "Falha ao deletar matéria.",
+      details: process.env.NODE_ENV === "development" ? String(err) : undefined,
+    });
+  }
+});
+
 export default router;

@@ -10,11 +10,6 @@ import SubjectDetail from './pages/subjects/SubjectDetail';
 import SubjectSummaries from './pages/subjects/SubjectSummaries';
 import SubjectFlashcards from './pages/subjects/SubjectFlashcards';
 import SubjectTests from './pages/subjects/SubjectTests';
-import FlashcardList from './pages/flashcards/FlashcardList';
-import SummaryList from './pages/summaries/SummaryList';
-import SummaryDetail from './pages/summaries/SummaryDetail';
-import QuizList from './pages/quizzes/QuizList';
-import QuizDetail from './pages/quizzes/QuizDetail';
 import Profile from './pages/profile/Profile';
 import AppLayout from './layout/AppLayout';
 import { ToastContainer } from 'react-toastify';
@@ -83,11 +78,6 @@ function App() {
           <Route path="/subjects/:id/summaries" element={<SubjectSummaries />} />
           <Route path="/subjects/:id/flashcards" element={<SubjectFlashcards />} />
           <Route path="/subjects/:id/tests" element={<SubjectTests />} />
-          <Route path="/flashcards" element={<FlashcardList />} />
-          <Route path="/summaries" element={<SummaryList />} />
-          <Route path="/summaries/:id" element={<SummaryDetail />} />
-          <Route path="/quizzes" element={<QuizList />} />
-          <Route path="/quizzes/:id" element={<QuizDetail />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
