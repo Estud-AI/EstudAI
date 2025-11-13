@@ -82,7 +82,6 @@ export async function login({ email, password }) {
       firebaseUid: user.uid, // UID do Firebase (string)
       name: user.displayName || backendUser.name || email.split('@')[0],
       email: user.email,
-      photoURL: user.photoURL,
     };
     
     setAuth({ 
@@ -121,7 +120,6 @@ export async function register({ name, email, password }) {
       firebaseUid: user.uid, // UID do Firebase (string)
       name: name,
       email: user.email,
-      photoURL: user.photoURL,
     };
     
     setAuth({ 
@@ -156,7 +154,6 @@ export async function loginWithGoogle() {
       firebaseUid: user.uid, // UID do Firebase (string)
       name: user.displayName,
       email: user.email,
-      photoURL: user.photoURL,
     };
     
     setAuth({ 
@@ -245,7 +242,6 @@ export function onAuthChange(callback) {
         firebaseUid: user.uid, // UID do Firebase (string)
         name: user.displayName || backendUser.name || user.email?.split('@')[0],
         email: user.email,
-        photoURL: user.photoURL,
       };
       
       setAuth({ 
