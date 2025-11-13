@@ -21,7 +21,6 @@ export const UserSchema = z.object({
         "Phone must be a valid international number (digits, optional leading +)",
     })
     .optional(),
-  photoURL: z.string().url({ message: "Photo must be a valid URL" }).optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;

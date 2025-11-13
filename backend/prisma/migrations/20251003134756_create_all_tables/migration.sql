@@ -6,7 +6,6 @@ CREATE TABLE "public"."User" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "photoURL" TEXT,
     "phoneNumber" TEXT,
     "dayStreak" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
