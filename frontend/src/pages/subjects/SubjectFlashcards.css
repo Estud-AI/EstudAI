@@ -20,3 +20,88 @@
 .rotate-y-180 {
   transform: rotateY(180deg);
 }
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .subject-flashcards-container {
+    padding: 1.5rem;
+  }
+
+  .flashcard {
+    max-width: 500px;
+    height: 350px;
+  }
+
+  .flashcard-content p {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .subject-flashcards-container {
+    padding: 1rem;
+  }
+
+  .flashcards-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .flashcards-header > div {
+    min-width: 100%;
+  }
+
+  .btn-create-header {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .flashcards-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.5rem;
+  }
+
+  .flashcards-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.75rem 1.25rem;
+  }
+
+  .flashcard {
+    height: 300px;
+    max-width: 100%;
+  }
+
+  .flashcard-content p {
+    font-size: 1.125rem;
+  }
+
+  .flashcard-controls {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .control-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .flashcard-progress {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+}

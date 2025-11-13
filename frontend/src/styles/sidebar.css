@@ -10,6 +10,84 @@
   left: 0;
   z-index: 100;
   box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar minimizada */
+.sidebar.minimized {
+  width: 70px;
+}
+
+.sidebar.minimized .sidebar-title,
+.sidebar.minimized .sidebar-section-title,
+.sidebar.minimized .sidebar-loading,
+.sidebar.minimized .sidebar-empty {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+}
+
+.sidebar.minimized .sidebar-link span {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+}
+
+.sidebar.minimized .sidebar-link {
+  justify-content: center;
+  padding: 0.875rem;
+}
+
+.sidebar.minimized .sidebar-header {
+  justify-content: center;
+  gap: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar.minimized {
+    width: 260px;
+  }
+
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
+
+/* Overlay para mobile */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar-overlay {
+    display: none;
+  }
 }
 
 .sidebar-header {
@@ -19,6 +97,29 @@
   align-items: center;
   gap: 0.75rem;
   height: 64px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  right: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .sidebar-icon-logo {
@@ -33,6 +134,9 @@
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.02em;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .sidebar-menu {
@@ -91,9 +195,10 @@
   stroke: var(--accent-primary);
 }
 
-.sidebar-link.active .sidebar-icon {
-  opacity: 1;
-  stroke: var(--accent-primary);
+.sidebar-link span {
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .sidebar-footer {
