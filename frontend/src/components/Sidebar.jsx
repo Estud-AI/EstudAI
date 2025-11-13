@@ -114,19 +114,19 @@ export default function Sidebar({ isMinimized, toggleMinimize, isMobileOpen, clo
               </span>
             )}
           </div>
-          <button 
+          {/* <button 
             className="hidden lg:flex w-8 h-8 items-center justify-center rounded-lg hover:bg-gray-100 transition-colors shrink-0"
             onClick={toggleMinimize}
             title={isMinimized ? 'Expandir sidebar' : 'Minimizar sidebar'}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg className="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               {isMinimized ? (
                 <path d="M9 18l6-6-6-6"/>
               ) : (
                 <path d="M15 18l-6-6 6-6"/>
               )}
             </svg>
-          </button>
+          </button> */}
         </div>
       
         {/* Navigation */}
