@@ -12,6 +12,27 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
+		keyframes: {
+			shimmer: {
+				'0%': { transform: 'translateX(-100%)' },
+				'100%': { transform: 'translateX(100%)' }
+			}
+		},
+		animation: {
+			shimmer: 'shimmer 2s infinite'
+		},
+		perspective: {
+			'1000': '1000px'
+		},
+		transformStyle: {
+			'3d': 'preserve-3d'
+		},
+		backfaceVisibility: {
+			'hidden': 'hidden'
+		},
+		rotate: {
+			'y-180': 'rotateY(180deg)'
+		},
   		colors: {
 			// Cores do EstudAI baseadas nas logos
 			'estudai': {
@@ -63,6 +84,24 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.perspective-1000': {
+          perspective: '1000px',
+        },
+        '.transform-style-3d': {
+          'transform-style': 'preserve-3d',
+        },
+        '.backface-hidden': {
+          'backface-visibility': 'hidden',
+        },
+        '.rotate-y-180': {
+          transform: 'rotateY(180deg)',
+        },
+      })
+    },
+  ],
 }
 

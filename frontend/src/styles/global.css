@@ -28,9 +28,9 @@ a {
   transition: color 0.2s;
 }
 
-a:hover {
+/* a:hover {
   color: var(--secondary-green);
-}
+} */
 
 button {
   font-family: inherit;
@@ -43,7 +43,7 @@ button {
   transition: background 0.2s;
 }
 
-button:hover {
+/* button:hover {
   background: var(--secondary-green);
-}
+} */
 /* Tailwind removido. Apenas CSS customizado abaixo. */

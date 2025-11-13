@@ -68,3 +68,13 @@ export const generateTest = async (userId, subjectId) => {
     throw new Error(error.response?.data?.error || 'Erro ao gerar simulado');
   }
 };
+
+// Deletar uma matéria
+export const deleteSubject = async (subjectId) => {
+  try {
+    const response = await api.delete(`/api/subjects/${subjectId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Erro ao deletar matéria');
+  }
+};

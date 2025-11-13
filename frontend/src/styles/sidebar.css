@@ -137,9 +137,51 @@
   letter-spacing: 0.05em;
 }
 
+.sidebar-subject-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sidebar-subject-item:hover .sidebar-delete-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
 .sidebar-subject {
   font-size: 0.875rem;
   padding: 0.75rem 1rem;
+  flex: 1;
+}
+
+.sidebar-delete-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 0.375rem;
+  padding: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--danger);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 10;
+}
+
+.sidebar-delete-btn:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+  transform: scale(1.05);
+}
+
+.sidebar-delete-btn svg {
+  flex-shrink: 0;
 }
 
 .sidebar-view-all {
